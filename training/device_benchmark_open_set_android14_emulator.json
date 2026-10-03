@@ -1,0 +1,43 @@
+{
+  "benchmark": "ReadBuddy open-set CNN emulator/device runtime",
+  "executedAt": "2026-09-30",
+  "input": "synthetic 128x128 black invalid trace on white PNG; not accuracy data",
+  "warmupRuns": 5,
+  "measuredRuns": 30,
+  "modelLoadMilliseconds": 1191.073,
+  "nativeInferenceMilliseconds": {
+    "mean": 67.85766666666667,
+    "p50": 61.422,
+    "p95": 99.009,
+    "minimum": 57.428,
+    "maximum": 116.294
+  },
+  "endToEndMilliseconds": {
+    "mean": 71.36666666666667,
+    "p50": 65.145,
+    "p95": 102.464,
+    "minimum": 59.355,
+    "maximum": 120.306
+  },
+  "runtime": {
+    "platform": "android-x64 emulator",
+    "android": "14 API 34",
+    "device": "sdk gphone64 x86 64"
+  },
+  "model": {
+    "version": "readbuddy-open-set-cnn-v1-9bc099be-alpha-crop-v2",
+    "sha256": "9bc099beb978cd10b37d3789cf41be1d9f47baa40353adc8399fc20efa11c751",
+    "inputShape": [1, 64, 64, 1],
+    "inputType": "float32",
+    "outputShape": [1, 455],
+    "outputType": "float32",
+    "classCount": 455,
+    "unknownClassId": 455
+  },
+  "invalidTracePrediction": {
+    "classId": 455,
+    "outputIndex": 454,
+    "label": "Unknown/Invalid",
+    "confidence": 0.9999995231628418
+  }
+}

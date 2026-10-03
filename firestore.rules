@@ -1,0 +1,224 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Fetches a student doc by ID to check ownership from a DIFFERENT
+    // document's rule (readingSessions/quizAttempts/joinCodes creation,
+    // where `resource`/`request.resource` is that other document, not the
+    // student). Only usable where the caller already knows studentId from
+    // the request path/data — never as a `list`-query condition on the
+    // students collection itself, see the comment on students/{studentId}
+    // below for why (confirmed against the Firestore emulator: get()'ing
+    // "yourself" while Firestore is validating a list query over your own
+    // collection throws "Null value error", even though the exact same
+    // get() works fine for a single get()/create() request).
+    function isOwnerViaGet(studentId) {
+      return get(/databases/$(database)/documents/students/$(studentId)).data.ownerUid == request.auth.uid;
+    }
+
+    function isLinkedTeacher(studentId) {
+      return exists(/databases/$(database)/documents/students/$(studentId)/teacherLinks/$(request.auth.uid));
+    }
+
+    function isValidTaskAttempt(data) {
+      return data.keys().hasOnly([
+        'taskType', 'grade', 'language', 'score', 'total',
+        'completedAt', 'items'
+      ]) &&
+      data.taskType is string &&
+      data.grade is int && data.grade >= 1 && data.grade <= 2 &&
+      data.language is string &&
+      data.score is int && data.score >= 0 &&
+      data.total is int && data.total >= 0 && data.total <= 50 &&
+      data.score <= data.total &&
+      data.completedAt is timestamp &&
+      data.items is list && data.items.size() <= 50;
+    }
+
+    function isValidDailyActivity(data, dateKey) {
+      return data.keys().hasOnly([
+        'dateKey', 'appOpenCount', 'activitiesCompleted',
+        'taskAttempts', 'readingSessions', 'quizAttempts', 'lastActiveAt'
+      ]) &&
+      data.dateKey == dateKey &&
+      data.appOpenCount is int && data.appOpenCount >= 0 &&
+      data.activitiesCompleted is int && data.activitiesCompleted >= 0 &&
+      data.taskAttempts is int && data.taskAttempts >= 0 &&
+      data.readingSessions is int && data.readingSessions >= 0 &&
+      data.quizAttempts is int && data.quizAttempts >= 0 &&
+      data.activitiesCompleted == data.taskAttempts +
+        data.readingSessions + data.quizAttempts &&
+      data.lastActiveAt is timestamp;
+    }
+
+    function isValidCoachingPlan(data, teacherUid) {
+      return data.keys().hasOnly([
+        'teacherUid', 'weeklyGoal', 'teacherNote',
+        'targetActivitiesPerWeek', 'updatedAt'
+      ]) &&
+      data.teacherUid == teacherUid &&
+      data.weeklyGoal is string && data.weeklyGoal.size() <= 240 &&
+      data.teacherNote is string && data.teacherNote.size() <= 500 &&
+      data.targetActivitiesPerWeek is int &&
+      data.targetActivitiesPerWeek >= 1 &&
+      data.targetActivitiesPerWeek <= 7 &&
+      data.updatedAt is timestamp;
+    }
+
+    // qaBank and qaUnmatched are only touched by Cloud Functions (Admin
+    // SDK, which bypasses these rules entirely). No client access needed.
+    // (Note: this project is currently on the Spark plan, so those
+    // functions aren't actually deployed yet — see functions/index.js.)
+    match /qaBank/{document=**} {
+      allow read, write: if false;
+    }
+    match /qaUnmatched/{document=**} {
+      allow read, write: if false;
+    }
+
+    // users/{uid}: a signed-in account (including anonymous "guest mode"
+    // sessions) can only read/write its own profile document — includes
+    // the account's role ('parent' | 'teacher').
+    match /users/{uid} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+    }
+
+    // joinCodes/{code}: a lookup table from a student's short share code to
+    // its studentId. Deliberately readable by any signed-in user via `get`
+    // (fetch-by-known-ID) — but NOT via `list` (browsing/enumeration is
+    // blocked), so the only way to ever learn a code -> studentId mapping
+    // is to already have been told the code out-of-band (e.g. a parent
+    // sharing it with a teacher). Codes are drawn from a 32-character
+    // alphabet at 6 characters (~1 billion combinations, see
+    // StudentService._generateJoinCode), so blind guessing isn't practical.
+    // Only the owning parent may create the code for their own student, and
+    // it's immutable after that (no update/delete from the client).
+    match /joinCodes/{code} {
+      allow get: if request.auth != null;
+      allow list: if false;
+      allow create: if request.auth != null && isOwnerViaGet(request.resource.data.studentId);
+      allow update, delete: if false;
+    }
+
+    // students/{studentId}: owned by exactly one account via ownerUid.
+    // Also readable by any teacher who has redeemed this student's join
+    // code (see teacherLinks below).
+    //
+    // The read rule uses resource.data.ownerUid directly — NOT
+    // isOwnerViaGet(studentId) — because StudentService.getStudentsForCurrentUser()
+    // runs students.where('ownerUid', '==', uid), a `list` query over this
+    // very collection. A get() call inside this collection's own list rule
+    // is effectively "fetch yourself while Firestore is still deciding
+    // whether you're allowed to be listed," which fails (confirmed against
+    // the emulator) even for a brand-new account with zero students, i.e.
+    // it broke on literally the first query a new sign-up ever makes.
+    // resource.data is already present for both get and list evaluation,
+    // no extra fetch needed, and is the documented reliable pattern here.
+    match /students/{studentId} {
+      allow read: if request.auth != null && (
+        resource.data.ownerUid == request.auth.uid ||
+        isLinkedTeacher(studentId)
+      );
+      allow update, delete: if request.auth != null && resource.data.ownerUid == request.auth.uid;
+      allow create: if request.auth != null && request.resource.data.ownerUid == request.auth.uid;
+
+      // Real activity data, written only by the owning device (the
+      // student's own family device) as sessions/quizzes complete. Readable
+      // by the owner AND any linked teacher — this is the actual "track a
+      // child's progress" data a teacher signed up to see. These are
+      // queried via .orderBy().get() scoped to one already-known studentId
+      // (not a top-level collection list), so get()'ing the *parent*
+      // student doc from here is a different document than the one being
+      // evaluated and works fine — unlike the self-referential case above.
+      match /readingSessions/{sessionId} {
+        allow read: if request.auth != null && (isOwnerViaGet(studentId) || isLinkedTeacher(studentId));
+        allow create: if request.auth != null && isOwnerViaGet(studentId);
+        allow update, delete: if false;
+      }
+      match /quizAttempts/{attemptId} {
+        allow read: if request.auth != null && (isOwnerViaGet(studentId) || isLinkedTeacher(studentId));
+        allow create: if request.auth != null && isOwnerViaGet(studentId);
+        allow update, delete: if false;
+      }
+
+      // Sanitised practice summaries only: task/grade/language, score,
+      // timestamp, item correctness and optional tracing similarity. The
+      // client never uploads raw handwriting, photos, chat content, model
+      // internals, or credentials. Deterministic IDs make owner retries an
+      // update; linked teachers remain strictly read-only.
+      match /taskAttempts/{attemptId} {
+        allow read: if request.auth != null && (isOwnerViaGet(studentId) || isLinkedTeacher(studentId));
+        allow create, update: if request.auth != null &&
+          isOwnerViaGet(studentId) && isValidTaskAttempt(request.resource.data);
+        allow delete: if false;
+      }
+
+      // One aggregate document per local calendar day. Used to distinguish
+      // an active learning day, an app-open-only day, and no recorded use.
+      match /dailyActivity/{dateKey} {
+        allow read: if request.auth != null && (isOwnerViaGet(studentId) || isLinkedTeacher(studentId));
+        allow create, update: if request.auth != null &&
+          isOwnerViaGet(studentId) &&
+          isValidDailyActivity(request.resource.data, dateKey);
+        allow delete: if false;
+      }
+
+      // One coaching record per teacher. Recommendations are calculated on
+      // device from progress evidence; only the teacher's short goal and
+      // observation are stored. Another teacher cannot read or overwrite it.
+      match /coachingPlans/{teacherUid} {
+        allow read: if request.auth != null &&
+          request.auth.uid == teacherUid &&
+          (isOwnerViaGet(studentId) || isLinkedTeacher(studentId));
+        allow create, update: if request.auth != null &&
+          request.auth.uid == teacherUid &&
+          (isOwnerViaGet(studentId) || isLinkedTeacher(studentId)) &&
+          isValidCoachingPlan(request.resource.data, teacherUid);
+        allow delete: if false;
+      }
+
+      // AI Assistant chat history (see chat_history_service.dart). Unlike
+      // readingSessions/quizAttempts above — which represent one completed,
+      // immutable event — a conversation is appended to repeatedly as the
+      // chat continues, so (deliberately, unlike those two) `update` is
+      // allowed for the owner. Still no client delete.
+      match /conversations/{conversationId} {
+        allow read: if request.auth != null && (isOwnerViaGet(studentId) || isLinkedTeacher(studentId));
+        allow create, update: if request.auth != null && isOwnerViaGet(studentId);
+        allow delete: if false;
+      }
+    }
+
+    // teacherLinks/{teacherUid}: proof that a teacher redeemed a student's
+    // join code. Declared at top level with a {path=**} wildcard, NOT
+    // nested inside match /students/{studentId} — a nested match only
+    // secures reads of a *known* students/{id}/teacherLinks path; it does
+    // NOT extend to the collectionGroup('teacherLinks') query the Teacher
+    // Dashboard runs to find all of its linked students across every
+    // student (confirmed against the Firestore emulator — the nested
+    // version fell through to the deny-all catch-all below).
+    //
+    // The condition checks resource.data.teacherUid (a field stored ON the
+    // document) rather than the {teacherUid} path segment — path segments
+    // captured after a {path=**} wildcard aren't reliably bound during
+    // `list`/collection-group query evaluation (also confirmed against the
+    // emulator: using the path variable here throws "Null value error"
+    // specifically on list, though get() alone would have worked). Field
+    // comparison is the documented, reliable pattern for collection-group
+    // security. A teacher may only ever create/read a link doc for
+    // themselves — and the only way to discover a valid studentId to link
+    // against in the first place is via the joinCodes lookup above, which
+    // requires already knowing the code. No Cloud Function needed: the
+    // security boundary is "you can't find a studentId you weren't given a
+    // code for," not the write itself.
+    match /{path=**}/teacherLinks/{linkId} {
+      allow read: if request.auth != null && resource.data.teacherUid == request.auth.uid;
+      allow create: if request.auth != null && request.resource.data.teacherUid == request.auth.uid;
+      allow update, delete: if false;
+    }
+
+    // Deny everything else by default.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

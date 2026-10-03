@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "126758321312",
+    "project_id": "reading-app-10118",
+    "storage_bucket": "reading-app-10118.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:126758321312:android:a449ee414a494dc2d2ddc5",
+        "android_client_info": {
+          "package_name": "com.example.reading_assistant_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCKaimBvmeZdZOnOWQb9-4SIZ6gX2QDKLg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

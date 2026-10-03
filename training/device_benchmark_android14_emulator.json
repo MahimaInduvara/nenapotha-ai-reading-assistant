@@ -1,0 +1,71 @@
+{
+  "benchmark": "ReadBuddy bundled CNN emulator/device runtime",
+  "input": "synthetic 128x128 black trace on white PNG; not accuracy data",
+  "warmupRuns": 5,
+  "measuredRuns": 30,
+  "modelLoadMilliseconds": 270.085,
+  "nativeInferenceMilliseconds": {
+    "mean": 83.57666666666667,
+    "p50": 74.789,
+    "p95": 140.79,
+    "minimum": 61.713,
+    "maximum": 147.802
+  },
+  "endToEndMilliseconds": {
+    "mean": 88.20183333333333,
+    "p50": 82.138,
+    "p95": 143.455,
+    "minimum": 63.868,
+    "maximum": 172.729
+  },
+  "runtime": {
+    "operatingSystem": "android",
+    "operatingSystemVersion": "sdk_gphone64_x86_64-userdebug 14 UE1A.230829.050 12077443 dev-keys",
+    "dartVersion": "3.10.4 (stable) (Tue Dec 9 00:01:55 2025 -0800) on \"android_x64\""
+  },
+  "model": {
+    "inputName": "serving_default_image:0",
+    "inputShape": [
+      1,
+      64,
+      64,
+      1
+    ],
+    "inputType": "float32",
+    "outputName": "StatefulPartitionedCall_1:0",
+    "outputShape": [
+      1,
+      454
+    ],
+    "outputType": "float32",
+    "classCount": 454
+  },
+  "lastPrediction": {
+    "classId": 300,
+    "outputIndex": 299,
+    "confidence": 0.9808124303817749
+  },
+  "evidence": {
+    "recordedAt": "2026-08-31T15:35:00.8058811+05:30",
+    "physicalDevice": false,
+    "deviceScope": "Android 14 x86_64 emulator only",
+    "rawLog": "training/stage3_device_benchmark_ad082e94_raw.log",
+    "modelPath": "assets/models/sinhala_letter_model.tflite",
+    "modelBytes": 2527920,
+    "modelSha256": "AD082E94B4F80F4B55D265F98C057972107DFD1D5245675CEBC1C56BA0E0B189",
+    "classNamesPath": "assets/models/class_names.txt",
+    "classNamesBytes": 2162,
+    "classNamesSha256": "D245857E360BE8695FDD21EB2A15961E07FDD69A05BD7BC791AEE97F1E381BCB",
+    "benchmarkApkType": "debug integration-test APK",
+    "benchmarkApkBytes": 131150498,
+    "benchmarkApkSha256": "3F3B15FEC62118DBD092AD06D7BCA31CCB4CE4D5DC6B2C2F5E0DA3DA97D15924",
+    "benchmarkApkRetained": false,
+    "regularAppApkPath": "build/app/outputs/flutter-apk/app-debug.apk",
+    "regularAppApkBytes": 134087623,
+    "regularAppApkSha256": "9CD3471496EF54DEDD669BE585E06A87C751D3143AFFD992516DDE8D34ECA97B",
+    "regularAppEmbeddedModelPath": "assets/flutter_assets/assets/models/sinhala_letter_model.tflite",
+    "regularAppEmbeddedModelSha256": "AD082E94B4F80F4B55D265F98C057972107DFD1D5245675CEBC1C56BA0E0B189",
+    "regularAppLaunchPassed": true,
+    "regularAppLaunchedAt": "2026-08-31T15:38:10.3378984+05:30"
+  }
+}

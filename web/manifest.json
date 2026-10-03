@@ -1,0 +1,35 @@
+{
+    "name": "NenaPotha AI",
+    "short_name": "NenaPotha",
+    "start_url": ".",
+    "display": "standalone",
+    "background_color": "#F7F6FF",
+    "theme_color": "#5A4FF3",
+    "description": "A bilingual literacy app for Grade 1 and Grade 2 learners.",
+    "orientation": "portrait-primary",
+    "prefer_related_applications": false,
+    "icons": [
+        {
+            "src": "icons/NenaPotha-192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "icons/NenaPotha-512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        },
+        {
+            "src": "icons/NenaPotha-maskable-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "icons/NenaPotha-maskable-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ]
+}

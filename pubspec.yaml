@@ -1,0 +1,65 @@
+name: reading_assistant_app
+description: "A Reading and Comprehension Assistant for Primary School Students"
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.10.4
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+  google_fonts: ^6.1.0
+  flutter_riverpod: ^2.4.0
+  go_router: ^12.0.0
+  shared_preferences: ^2.2.0
+  hive_flutter: ^1.1.0
+  http: ^1.1.0
+  intl: ^0.18.0
+  path_provider: ^2.1.0
+  image_picker: ^1.1.2
+  confetti: ^0.8.0
+  firebase_core: ^3.6.0
+  cloud_firestore: ^5.4.4
+  firebase_auth: ^5.3.1
+  tflite_flutter: ^0.12.1
+  image: ^4.1.7
+  firebase_app_check: ^0.3.2+10
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  integration_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/models/sinhala_letter_model.tflite
+    - assets/models/class_names.txt
+    - assets/fonts/
+    - assets/images/tasks/english/
+    - assets/images/tasks/sinhala/
+    - assets/images/tasks/grade2/
+    - assets/images/branding/
+
+  fonts:
+    - family: Baloo2
+      fonts:
+        - asset: assets/fonts/Baloo2-Bold.ttf
+          weight: 700
+  #   - family: NotoSansSinhala
+  #     fonts:
+  #       - asset: assets/fonts/NotoSansSinhala-Regular.ttf
+  #       - asset: assets/fonts/NotoSansSinhala-Bold.ttf
+  #         weight: 700
+  #   - family: Poppins
+  #     fonts:
+  #       - asset: assets/fonts/Poppins-Regular.ttf
+  #       - asset: assets/fonts/Poppins-Bold.ttf
+  #         weight: 700
