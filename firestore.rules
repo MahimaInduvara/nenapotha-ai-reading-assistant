@@ -64,17 +64,6 @@ service cloud.firestore {
       data.updatedAt is timestamp;
     }
 
-    // qaBank and qaUnmatched are only touched by Cloud Functions (Admin
-    // SDK, which bypasses these rules entirely). No client access needed.
-    // (Note: this project is currently on the Spark plan, so those
-    // functions aren't actually deployed yet — see functions/index.js.)
-    match /qaBank/{document=**} {
-      allow read, write: if false;
-    }
-    match /qaUnmatched/{document=**} {
-      allow read, write: if false;
-    }
-
     // users/{uid}: a signed-in account (including anonymous "guest mode"
     // sessions) can only read/write its own profile document — includes
     // the account's role ('parent' | 'teacher').
@@ -176,16 +165,6 @@ service cloud.firestore {
         allow delete: if false;
       }
 
-      // AI Assistant chat history (see chat_history_service.dart). Unlike
-      // readingSessions/quizAttempts above — which represent one completed,
-      // immutable event — a conversation is appended to repeatedly as the
-      // chat continues, so (deliberately, unlike those two) `update` is
-      // allowed for the owner. Still no client delete.
-      match /conversations/{conversationId} {
-        allow read: if request.auth != null && (isOwnerViaGet(studentId) || isLinkedTeacher(studentId));
-        allow create, update: if request.auth != null && isOwnerViaGet(studentId);
-        allow delete: if false;
-      }
     }
 
     // teacherLinks/{teacherUid}: proof that a teacher redeemed a student's

@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:reading_assistant_app/services/ai_service.dart';
+import 'package:reading_assistant_app/services/quiz_generation_service.dart';
 import 'package:reading_assistant_app/services/story_data_service.dart';
 
 void main() {
@@ -97,7 +97,7 @@ void main() {
   group('Story comprehension', () {
     test('Grade 1 uses three concrete recognition questions', () {
       final story = StoryDataService.getStoryById('g1_s3')!;
-      final questions = AIService().generateQuiz(
+      final questions = QuizGenerationService().generateQuiz(
         story,
         count: 5,
         gradeLevel: 1,
@@ -113,7 +113,7 @@ void main() {
 
     test('Grade 2 includes inferential questions for every new story', () {
       for (final story in StoryDataService.getStoriesForGrade(2)) {
-        final questions = AIService().generateQuiz(
+        final questions = QuizGenerationService().generateQuiz(
           story,
           count: 5,
           gradeLevel: 2,

@@ -584,10 +584,10 @@ class Grade1Content {
       sentence: 'කට විශාලයි.',
     ),
     VocabWord(
-      wordSi: 'නාය',
+      wordSi: 'ජලය',
       wordEn: 'Water',
       emoji: '💧',
-      sentence: 'නාය 차늘 ශීතලයි.',
+      sentence: 'ජලය ශීතලයි.',
     ),
   ];
 }

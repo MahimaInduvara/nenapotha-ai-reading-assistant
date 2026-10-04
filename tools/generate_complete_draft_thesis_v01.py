@@ -43,23 +43,35 @@ from generate_thesis_breakdown import (
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "deliverables"
-DOCX = OUT / "NenaPotha_AI_Final_Thesis_Screenshot_Integrated_28277.docx"
+DOCX = OUT / "NenaPotha_AI_Final_Thesis_28277.docx"
 SCREENSHOT_COMPOSITE = ASSETS / "nenapotha_ai_app_execution_screens.png"
-SCREENSHOTS_DIR = ROOT / "work" / "thesis_screenshots_2026-09-29"
+SCREENSHOT_APPENDIX_COMPOSITE = ASSETS / "nenapotha_ai_app_execution_screens_portrait.png"
+SCREENSHOTS_DIR = Path(r"C:\Users\DELL\Pictures\Screenshots\research")
 SCREENSHOT_MANIFEST = [
-    ("01_profile_setup.png", "Language-selection screen for Sinhala and English interface preferences"),
-    ("02_home.png", "Secure parent or teacher sign-in screen"),
-    ("03_learning_hub.png", "Account registration with parent and teacher role selection"),
-    ("04_letter_tracing.png", "Learner-profile setup with avatar, name and grade selection"),
-    ("05_story_reading.png", "Child-facing home dashboard with recommended learning activities"),
-    ("06_grade2_pillam.png", "Grade 2 picture-supported pillam learning screen"),
-    ("07_grade2_words.png", "Grade 2 word-learning screen with bilingual navigation controls"),
-    ("08_grade2_tracing.png", "Grade 2 structured task feedback and level evidence"),
-    ("09_grade2_tasks.png", "Learner progress dashboard with activity and skill indicators"),
-    ("10_progress.png", "Learner profile and accumulated learning evidence"),
-    ("11_teacher_overview.png", "Teacher sign-in screen"),
-    ("12_teacher_students.png", "Teacher dashboard and linked-student list"),
-    ("13_teacher_student_detail.png", "Teacher workflow for linking a learner by join code"),
+    ("Screenshot 2026-10-04 102217.png", "Parent and teacher authentication screen"),
+    ("Screenshot 2026-10-04 102118.png", "Independent Sinhala and English interface-language selection"),
+    ("Screenshot 2026-10-04 102317.png", "Child-facing home dashboard and recommended activity"),
+    ("Screenshot 2026-10-04 102348.png", "Grade 1 picture-supported letter-learning interface"),
+    ("Screenshot 2026-10-04 102621.png", "On-device Sinhala letter-tracing interface"),
+    ("Screenshot 2026-10-04 102707.png", "Grade 2 picture-supported pillam exploration"),
+    ("Screenshot 2026-10-04 102742.png", "Grade 2 pillam-completion learning task"),
+    ("Screenshot 2026-10-04 102410.png", "Evidence-based My Coach learning plan"),
+    ("Screenshot 2026-10-04 102527.png", "Learner progress dashboard and skill evidence"),
+    ("Screenshot 2026-10-04 102549.png", "Learner profile and application preferences"),
+    ("Screenshot 2026-10-04 101921.png", "Teacher dashboard and grade-filtered student list"),
+    ("Screenshot 2026-10-04 101956.png", "Teacher workflow for linking a learner by student code"),
+    ("Screenshot 2026-10-04 102032.png", "Individual student analysis available to the linked teacher"),
+]
+MEETING_DIR = Path(r"C:\Users\DELL\Pictures\lecture")
+MEETING_MANIFEST = [
+    ("WhatsApp Image 2026-10-04 at 00.16.16 (3).jpeg", "Student progression report with signed meeting register"),
+    ("WhatsApp Image 2026-10-04 at 00.16.14.jpeg", "Supervisory meeting minutes — Meeting 01"),
+    ("WhatsApp Image 2026-10-04 at 00.16.15.jpeg", "Supervisory meeting minutes — Meeting 02"),
+    ("WhatsApp Image 2026-10-04 at 00.16.15 (1).jpeg", "Supervisory meeting minutes — Meeting 03"),
+    ("WhatsApp Image 2026-10-04 at 00.16.15 (2).jpeg", "Supervisory meeting minutes — Meeting 04"),
+    ("WhatsApp Image 2026-10-04 at 00.16.16.jpeg", "Supervisory meeting minutes — Meeting 05"),
+    ("WhatsApp Image 2026-10-04 at 00.16.16 (1).jpeg", "Supervisory meeting minutes — Meeting 06"),
+    ("WhatsApp Image 2026-10-04 at 00.16.16 (2).jpeg", "Supervisory meeting minutes — Meeting 07"),
 ]
 
 
@@ -138,15 +150,15 @@ def make_complete_thesis_figures() -> None:
     base.make_diagrams()
     base.make_additional_diagrams()
 
-    # Replace the earlier progress chart with the protected held-out result.
-    img, d = _new_canvas("Protected Held-out CNN Evaluation", 1750, 970)
+    # Final registered open-set evaluation of the deployed model family.
+    img, d = _new_canvas("Registered Open-set CNN Evaluation", 1750, 970)
     metrics = [
-        ("Top-1 accuracy", 88.61, CORAL),
-        ("Macro precision", 88.86, ORANGE),
-        ("Macro recall", 88.11, TEAL),
-        ("Macro F1-score", 88.14, BLUE),
-        ("Top-2 accuracy", 92.05, "8E44AD"),
-        ("Top-3 accuracy", 93.51, "5C6BC0"),
+        ("Overall accuracy", 98.46, CORAL),
+        ("Letter-only accuracy", 98.51, ORANGE),
+        ("Macro F1-score", 98.73, TEAL),
+        ("Top-3 accuracy", 99.43, BLUE),
+        ("Unknown recall", 97.00, "8E44AD"),
+        ("Known-letter acceptance", 99.39, "5C6BC0"),
     ]
     y = 155
     for label, value, color in metrics:
@@ -155,7 +167,7 @@ def make_complete_thesis_figures() -> None:
         d.rounded_rectangle((560, y, 560 + 1000 * value / 100, y + 62), radius=18, fill=f"#{color}")
         d.text((1660, y + 30), f"{value:.2f}%", font=font(25, True), fill=f"#{color}", anchor="mm")
         y += 115
-    d.text((875, 885), "Test n = 11,984; 454 classes; exact-hash-deduplicated 70/15/15 split; seed 42",
+    d.text((875, 885), "Test n = 11,296; 454 known classes + Unknown/Invalid; invalid false acceptance = 3.00%",
            font=font(24, True), fill=f"#{NAVY}", anchor="ma")
     img.save(ASSETS / "cnn_protected_test_metrics.png", quality=96)
 
@@ -173,7 +185,7 @@ def make_complete_thesis_figures() -> None:
     cases = [
         ("Select Grade 1/2", 720, 210), ("Learn letters and words", 1050, 210),
         ("Trace a Sinhala letter", 720, 405), ("Read graded stories", 1050, 405),
-        ("Answer comprehension tasks", 720, 600), ("Ask NenaPotha AI", 1050, 600),
+        ("Answer comprehension tasks", 720, 600), ("Use My Coach plan", 1050, 600),
         ("Review progress evidence", 720, 795), ("Manage learner profile", 1050, 795),
     ]
     for label, x, y in cases:
@@ -193,9 +205,9 @@ def make_complete_thesis_figures() -> None:
         (70, 170, 560, 430, "Student", "studentId\nname\ngrade\nlanguage", "updateProfile()"),
         (750, 150, 1260, 440, "TaskAttempt", "taskId\nscore\ntimestamp\nmodelEvidence", "toMap()"),
         (1440, 170, 1930, 430, "Story", "title\ngrade\ntext\nquestions", "difficultyCheck()"),
-        (70, 700, 560, 1030, "LetterClassifierService", "modelVersion\nlabels[454]\nthreshold", "loadModel()\npredict()"),
-        (750, 690, 1260, 1040, "AIService / IntentRouter", "English/Sinhala tokens\nknown intents", "routeChatIntent()\ncreateExercise()"),
-        (1440, 700, 1930, 1040, "FirebaseAIChatService", "model\ntimeout\nApp Check", "chat()\nfriendlyFallback()"),
+        (70, 700, 560, 1030, "LetterClassifierService", "modelVersion\nlabels[455]\nopen-set gate", "loadModel()\npredict()"),
+        (750, 690, 1260, 1040, "SmartLearningCoachService", "attempt history\npriority rules", "buildPlan()\nnextActivity()"),
+        (1440, 700, 1930, 1040, "ProgressAnalyticsService", "daily activity\nskill evidence", "aggregate()\nshareWithTeacher()"),
     ]
     for x1, y1, x2, y2, name, attrs, methods in classes:
         d.rounded_rectangle((x1, y1, x2, y2), radius=18, fill="#F8FAFC", outline=f"#{BLUE}", width=4)
@@ -242,10 +254,10 @@ def make_complete_thesis_figures() -> None:
     for filename, title, actors, messages in [
         ("trace_sequence_diagram.png", "Sequence — On-device Trace Classification",
          ["Learner", "Tracing UI", "Classifier", "TFLite", "Progress Store"],
-         [(0,1,"tap Check"),(1,2,"predict(PNG)"),(2,3,"run [1,64,64,1]"),(3,2,"454 scores"),(2,1,"typed prediction"),(1,4,"save scalar evidence"),(1,0,"feedback / retry")]),
-        ("chat_sequence_diagram.png", "Sequence — Hybrid NenaPotha Chat",
-         ["User", "AI Help UI", "Intent Router", "Firebase AI", "App Check"],
-         [(0,1,"send English/Sinhala message"),(1,2,"route complete words"),(2,1,"known intent / exercise"),(2,3,"unknown conversation only"),(3,4,"verify app attestation"),(4,3,"verified"),(3,1,"child-friendly answer"),(1,0,"answer or friendly fallback")]),
+         [(0,1,"tap Check"),(1,2,"predict(PNG)"),(2,3,"run [1,64,64,1]"),(3,2,"455 scores"),(2,1,"typed prediction"),(1,4,"save scalar evidence"),(1,0,"feedback / retry")]),
+        ("chat_sequence_diagram.png", "Sequence — Evidence-based My Coach",
+         ["Learner", "Coach UI", "Coach Service", "Progress Store", "Task Screen"],
+         [(0,1,"open My Coach"),(1,2,"request plan"),(2,3,"load recent evidence"),(3,2,"attempt summaries"),(2,1,"ranked practice plan"),(0,1,"select activity"),(1,4,"open chosen task"),(4,3,"save completed attempt")]),
     ]:
         img, d = _new_canvas(title, 1900, 1050)
         xs = [180, 560, 950, 1330, 1710]
@@ -264,16 +276,16 @@ def make_complete_thesis_figures() -> None:
     # Deployment/hybrid architecture.
     img, d = _new_canvas("Deployment and Trust Boundaries", 1950, 1160)
     rounded_box(d, (70, 150, 1040, 1000), "#EEF2FF", f"#{BLUE}", "Android Device / Flutter Application",
-                "Child-facing learning and reading UI\n\nLocal intent router\n\nTFLite CNN (454 outputs)\n\nDart Grade 1/2 text classifier\n\nLocal TTS/STT and cached task state", 34, 25)
+                "Child-facing learning and reading UI\n\nDeterministic My Coach rules\n\nTFLite CNN (455 outputs)\n\nDart Grade 1/2 text classifier\n\nCached learning content and task state", 34, 25)
     rounded_box(d, (1230, 155, 1870, 480), "#DFF2EF", f"#{TEAL}", "Firebase Project",
-                "Authentication\nFirestore progress records\nApp Check verification", 32, 25)
-    rounded_box(d, (1230, 650, 1870, 995), "#F3E5F5", "#8E44AD", "Firebase AI Logic",
-                "Gemini Developer API provider\nConversational answers only\nAPI credential remains server-side", 32, 25)
+                "Authentication\nFirestore progress records\nRole-aware teacher links", 32, 25)
+    rounded_box(d, (1230, 650, 1870, 995), "#F3E5F5", "#8E44AD", "Teacher / Guardian Analytics",
+                "Linked-student access\nDaily activity summaries\nTask and skill evidence", 32, 25)
     arrow(d, (1040, 340), (1230, 340), TEAL, 6)
     arrow(d, (1040, 820), (1230, 820), "8E44AD", 6)
     d.text((1135, 300), "authenticated data", font=font(20, True), fill=f"#{TEAL}", anchor="ms")
-    d.text((1135, 780), "unknown chat only", font=font(20, True), fill="#8E44AD", anchor="ms")
-    d.text((975, 1090), "No trace image, learner name, stored progress, or CNN output is sent to the conversational model.",
+    d.text((1135, 780), "authorized evidence", font=font(20, True), fill="#8E44AD", anchor="ms")
+    d.text((975, 1090), "Raw trace images stay on-device; only task results and progress evidence are synchronized.",
            font=font(24, True), fill=f"#{CORAL}", anchor="ma")
     img.save(ASSETS / "deployment_trust_boundary.png", quality=96)
 
@@ -281,10 +293,10 @@ def make_complete_thesis_figures() -> None:
     # screenshot set. The four panels cover the learner, learning-content,
     # progress and teacher-facing paths without inventing UI state.
     selected = [
-        ("05_story_reading.png", "(a) Learner home"),
-        ("06_grade2_pillam.png", "(b) Grade 2 pillam"),
-        ("09_grade2_tasks.png", "(c) Learner progress"),
-        ("12_teacher_students.png", "(d) Teacher dashboard"),
+        ("Screenshot 2026-10-04 102317.png", "(a) Learner home"),
+        ("Screenshot 2026-10-04 102707.png", "(b) Grade 2 pillam"),
+        ("Screenshot 2026-10-04 102527.png", "(c) Learner progress"),
+        ("Screenshot 2026-10-04 101921.png", "(d) Teacher dashboard"),
     ]
     panels = []
     for filename, label in selected:
@@ -315,6 +327,30 @@ def make_complete_thesis_figures() -> None:
                 anchor="ma",
             )
         canvas.save(SCREENSHOT_COMPOSITE, quality=96)
+
+        portrait = Image.new("RGB", (1250, 2200), "white")
+        portrait_draw = ImageDraw.Draw(portrait)
+        portrait_draw.text(
+            (625, 55),
+            "Final Workflow Overview",
+            font=font(38, True),
+            fill=f"#{NAVY}",
+            anchor="ma",
+        )
+        positions = [(315, 150), (935, 150), (315, 1160), (935, 1160)]
+        for (shot, label), (x, y) in zip(panels, positions):
+            panel = shot.copy()
+            panel.thumbnail((500, 880), Image.Resampling.LANCZOS)
+            framed = ImageOps.expand(panel, border=7, fill=f"#{BLUE}")
+            portrait.paste(framed, (x - framed.width // 2, y))
+            portrait_draw.text(
+                (x, y + 920),
+                label,
+                font=font(22, True),
+                fill=f"#{BLACK}",
+                anchor="ma",
+            )
+        portrait.save(SCREENSHOT_APPENDIX_COMPOSITE, quality=96)
 
 
 def setup_document() -> Document:
@@ -443,7 +479,7 @@ def title_page(doc: Document) -> None:
         ("Department of Software Engineering", 115),
         ("NSBM Green University", 8),
         ("Sri Lanka", 8),
-        ("September 2026", 30),
+        ("October 2026", 30),
     ]:
         p = doc.add_paragraph()
         p.alignment = WD_ALIGN_PARAGRAPH.CENTER
@@ -470,7 +506,7 @@ def title_page(doc: Document) -> None:
         ("Faculty of Computing", 8),
         ("NSBM Green University", 8),
         ("Sri Lanka", 8),
-        ("September 2026", 30),
+        ("October 2026", 30),
     ]:
         p = doc.add_paragraph()
         p.alignment = WD_ALIGN_PARAGRAPH.CENTER
@@ -484,24 +520,24 @@ def title_page(doc: Document) -> None:
 def front_matter(doc: Document) -> None:
     doc.add_heading("DECLARATION", level=1)
     add_body(doc, "I declare that the content of this undergraduate thesis titled ‘Design and Development of an AI-Enhanced Bilingual Reading and Comprehension Assistant for Grade 1 and Grade 2 Primary School Students’ is my own work and this thesis does not incorporate, without acknowledgement, any material previously submitted for any other degree in any university or institution of higher learning.")
-    p = doc.add_paragraph("Student name: L. M. I. Silva                                      Date: __________________")
+    p = doc.add_paragraph("Student name: L. M. I. Silva                                      Date: 04 October 2026")
     p.paragraph_format.space_before = Pt(30)
     p = doc.add_paragraph("Student signature: ______________________________________________")
     p.paragraph_format.space_before = Pt(12)
     p = doc.add_paragraph("Signature of the Principal Supervisor: __________________________")
     p.paragraph_format.space_before = Pt(30)
-    add_body(doc, "Dr./Mr./Ms. ______________________________________________\nSenior Lecturer/Lecturer\nDepartment of Software Engineering\nNSBM Green University")
+    add_body(doc, "Mr. Anton Jayakody\nPrincipal Supervisor\nDepartment of Software Engineering\nNSBM Green University")
     doc.add_page_break()
 
     doc.add_heading("ACKNOWLEDGEMENT", level=1)
-    add_body(doc, "I sincerely thank my project supervisor for the direction, critical feedback and research standards that shaped this study. I am grateful to the Faculty of Computing at NSBM Green University for providing the academic environment and resources required to complete the project. I also thank the two teachers whose preliminary observations helped clarify the practical challenges faced in early Sinhala literacy instruction; these observations are treated only as exploratory requirement input because of the small sample. My appreciation extends to my family and friends for their encouragement throughout the design, development, training and evaluation process. Finally, I acknowledge the researchers and open-source communities behind Flutter, Firebase, TensorFlow Lite, scikit-learn and the Sinhala handwriting resources used in this work.")
+    add_body(doc, "I sincerely thank my principal supervisor, Mr. Anton Jayakody, for his direction, critical feedback and insistence on defensible research evidence throughout this project. I am grateful to the Faculty of Computing and the Department of Software Engineering at NSBM Green University for the academic environment and resources required to complete the study. I also thank the teachers whose preliminary observations helped clarify practical challenges in early Sinhala literacy instruction; their input is treated as exploratory requirements evidence because the sample was small. My appreciation extends to my family and friends for their encouragement during design, development, model training, evaluation and thesis preparation. Finally, I acknowledge the researchers, dataset contributors and open-source communities behind Flutter, Firebase, TensorFlow Lite, scikit-learn and the Sinhala handwriting resources used in this work.")
     doc.add_page_break()
 
     doc.add_heading("ABSTRACT", level=1)
-    add_body(doc, "Foundational literacy remains a concern in Sri Lanka, while Sinhala-focused educational applications provide limited evidence-based support for handwriting feedback, graded reading and bilingual assistance in one mobile environment. This study designed and technically evaluated NenaPotha AI, a child-friendly mobile reading and comprehension assistant for Grade 1 and Grade 2 learners. A pragmatist design-science approach connected educational requirements with two machine-learning components and a protected conversational architecture. The first component is a 454-class convolutional neural network for isolated Sinhala handwritten-letter recognition. Auditing 108,933 publisher paths exposed duplicate leakage; after cross-class conflicts were quarantined and exact hashes grouped, 79,788 unique samples formed deterministic 55,820/11,984/11,984 training, validation and test partitions. On the protected test partition, the custom CNN achieved 88.61% top-1 accuracy, 88.14% macro-F1, 92.05% top-2 accuracy and 93.51% top-3 accuracy. Its 2.41 MiB TensorFlow Lite conversion preserved 99.00% top-1 agreement over 100 registered samples and averaged 83.58 ms native inference on an Android 14 emulator. Five independently verified class-to-Unicode mappings support formative tracing feedback. The second component is an interpretable Grade 1/2 logistic-regression proof of concept; its 69.2% resubstitution accuracy on 26 authored texts is not presented as generalization evidence. A whole-word bilingual intent router handles known learning requests, while Firebase AI Logic with App Check handles unmatched conversation without embedding a Gemini key. Static analysis, 125 automated Flutter tests, conversion parity and emulator execution support technical feasibility. Because no ethics-approved child trial was completed, the contribution is a reproducible, privacy-conscious technical artifact and evaluation protocol rather than evidence of improved classroom learning.")
+    add_body(doc, "Foundational literacy remains a concern in Sri Lanka, while Sinhala-focused educational applications provide limited integrated support for handwriting practice, grade-appropriate reading, picture-supported vocabulary and evidence-based adult guidance. This study designed and technically evaluated NenaPotha AI, a bilingual mobile reading and comprehension assistant for Grade 1 and Grade 2 learners. A pragmatist design-science approach connected educational requirements with two machine-learning components and a deterministic learning-coach workflow. The principal component is a 64 × 64 grayscale convolutional neural network extended from 454 known Sinhala character classes to a 455-output open-set model containing an explicit Unknown/Invalid class. On 11,296 open-set test samples, the base model achieved 98.46% overall accuracy, 98.51% letter-only accuracy, 98.73% macro-F1 and 99.43% top-3 accuracy; unknown recall was 97.00% and invalid false acceptance was 3.00%. A subsequent one-writer adaptation raised captured-sample training fit from 16.95% to 72.88% while retaining 95.85% accuracy on 1,108 held-out replay samples. These captured samples are not an independent child test set. The deployed TensorFlow Lite model preserved 100% top-1 parity over 100 registered samples and executed with a mean native latency of 81.24 ms and p95 of 92.92 ms over 30 Android 14 emulator runs. A second, interpretable logistic-regression component provides a Grade 1/2 text-difficulty quality-control signal; its 69.2% resubstitution accuracy on 26 authored texts is not treated as generalization evidence. The final application adds picture-supported Grade 1 and Grade 2 pathways, stories and comprehension tasks, progress synchronization, teacher-linked student analysis and a deterministic coach that uses recorded attempts without a chatbot or paid API. Static analysis and 130 automated Flutter tests passed. Because no ethics-approved child effectiveness trial was completed, the contribution is a reproducible technical artifact and evaluation protocol rather than evidence of improved learning outcomes.")
     p = doc.add_paragraph()
     p.add_run("Keywords—").bold = True
-    p.add_run(" Sinhala handwriting recognition, early literacy, convolutional neural network, TensorFlow Lite, readability assessment, Firebase AI Logic, bilingual mobile learning")
+    p.add_run(" Sinhala handwriting recognition, early literacy, open-set classification, convolutional neural network, TensorFlow Lite, readability assessment, learning analytics, bilingual mobile learning")
     doc.add_page_break()
 
     for index, (title, field, placeholder) in enumerate([
@@ -522,7 +558,7 @@ def front_matter(doc: Document) -> None:
         ("DSR/DSRM", "Design Science Research / Design Science Research Methodology"),
         ("ECE", "Expected Calibration Error"), ("HCR", "Handwritten Character Recognition"),
         ("NLP", "Natural Language Processing"), ("SRS", "System Requirements Specification"),
-        ("STT/TTS", "Speech-to-Text / Text-to-Speech"), ("TFLite", "TensorFlow Lite"),
+        ("FAR", "False Acceptance Rate"), ("TFLite", "TensorFlow Lite"),
         ("UI/UX", "User Interface / User Experience"), ("UAT", "User Acceptance Testing"),
     ])
     # A new section starts the main text at Arabic page 1.
@@ -533,25 +569,33 @@ def correct_legacy_chapter_claims(doc: Document) -> None:
         "the accuracy, class-level behaviour and confidence calibration of the Sinhala letter CNN on reference validation data;":
             "the accuracy, class-level behaviour and confidence calibration of the Sinhala letter CNN on the protected held-out test data;",
         "No reviewed work combines a Grade 1–2 Sinhala/English literacy application with an on-device Sinhala letter classifier and an offline Sinhala Grade 1/2 text-difficulty checker. ReadBuddy AI addresses that integration gap. It does not yet close the evidence gap: numeric label mapping, representative child traces, exact training provenance and an expert-labelled readability corpus remain necessary. This distinction between artifact contribution and validated educational effectiveness is the central critical position of this thesis.":
-            "No reviewed work combines a Grade 1–2 Sinhala/English literacy application with an on-device Sinhala letter classifier, an offline Sinhala Grade 1/2 text-difficulty checker and a protected bilingual conversational fallback. ReadBuddy AI addresses that integration gap. The five exposed letter mappings and reproducible training provenance are now verified, but representative child traces, complete Unicode mapping and an expert-labelled readability corpus remain necessary. This distinction between an evaluated artifact and demonstrated educational effectiveness is the central critical position of this thesis.",
+            "No reviewed work combines a Grade 1–2 Sinhala/English literacy application with an on-device open-set Sinhala letter classifier, an offline Sinhala Grade 1/2 text-difficulty checker and deterministic evidence-based coaching. NenaPotha AI addresses that integration gap. The 455-label contract and reproducible training provenance are verified, but representative child traces, writer-independent adaptation and an expert-labelled readability corpus remain necessary. This distinction between an evaluated artifact and demonstrated educational effectiveness is the central critical position of this thesis.",
         "Source code, model assets, emulator execution, static-analysis output and test output provide engineering evidence. At the current audit, flutter analyze reports ten findings, and the only widget test is an obsolete counter template that fails against the current app. These outcomes do not invalidate the research models, but they show that software-quality evidence is not yet submission-complete.":
             "Source code, model assets, emulator execution, static-analysis output and automated-test output provide engineering evidence. The final audit reports no Flutter analyzer issues, all current Flutter tests passing, Python pipeline tests passing and the on-device CNN integration benchmark passing. These results support software correctness within the tested scenarios, but do not replace field usability or educational-effectiveness evaluation.",
         "The shipped research component is described as a custom three-block CNN. Each block applies convolution and max pooling, followed by dense classification layers, dropout and a 454-way softmax output. Training used 64×64 grayscale inputs, Adam optimization, sparse categorical cross-entropy, batch size 32 and 15 epochs. Two recorded runs produced approximately 94.10% and 94.04% validation accuracy, suggesting run-level stability.":
-            "The final research component is a custom three-convolution CNN using 64×64 grayscale input, max pooling after the first two convolutions, a 128-unit dense layer, dropout 0.30 and a 454-way softmax output. Training used Adam at 0.001, sparse categorical cross-entropy, batch size 64, at most 40 epochs and validation-loss early stopping. On the separately protected test split it achieved 88.61% top-1 accuracy and 88.14% macro-F1.",
+            "The final research component is a 64×64 grayscale convolutional network with 454 known Sinhala classes and an explicit Unknown/Invalid output. On the registered 11,296-sample open-set test it achieved 98.46% overall accuracy, 98.51% letter-only accuracy, 98.73% macro-F1 and 97.00% unknown recall.",
         "The component is accepted as end-to-end functional only when the class mapping is complete, all five prototype letters have deterministic mapping tests, the UI verdict and persisted attempt agree, the application identifies whether CNN or geometric fallback produced the verdict, and physical-device inference succeeds within a supervisor-approved latency threshold. The current implementation does not yet meet all these criteria.":
-            "The component is accepted as technically integrated because all five exposed letters have deterministic mapping tests, the UI and stored verdict use the same typed prediction, model failures remain unscored, and emulator inference satisfies the functional runtime path. A physical-device benchmark and representative child-trace validation remain pending and are not implied by this acceptance.",
+            "The component is accepted as technically integrated because the 455-output model and label contracts are validated, the UI and stored verdict use the same typed prediction, invalid and failed inference paths remain unscored, and emulator inference satisfies the functional runtime path. A physical-device benchmark and representative child-trace validation remain pending and are not implied by this acceptance.",
         "The repository notebook currently describes a different 128×128 MobileNetV2/TFJS pipeline, whereas the app ships a 64×64 custom-CNN TFLite model. The exact notebook that generated the shipped model must be recovered and archived with environment versions, dataset manifest, seed and SHA-256 hashes before final submission.":
             "The original repository notebook described an obsolete 128×128 MobileNetV2/TFJS path. A reproducible 64×64 custom-CNN pipeline was therefore rebuilt from the final architecture, and now archives environment versions, seed 42, the frozen manifest and SHA-256 identities for the protected experiment and deployed TFLite artifact.",
     }
     token_replacements = {
         "Wasalthilake and Thangathurai": "Wasalthilake and Kartheeswaran",
-        "94.04% reference validation accuracy; macro-F1 0.940": "88.61% held-out test accuracy; macro-F1 0.8814",
-        "Adds local mobile integration, but Unicode mapping and child-field validity remain open.": "Adds local mobile integration and five verified Unicode mappings; child-field validity remains open.",
-        "94.04% on n=10,896 validation images": "88.61% on n=11,984 protected test images",
-        "ECE 0.084 on reference validation data": "ECE 0.0515 on protected test data",
-        "Physical-device median and p95 pending": "Emulator mean 83.58 ms and p95 140.79 ms; physical device pending",
+        "94.04% reference validation accuracy; macro-F1 0.940": "98.46% open-set accuracy; macro-F1 0.9873",
+        "Adds local mobile integration, but Unicode mapping and child-field validity remain open.": "Adds open-set mobile integration; representative child-field validity remains open.",
+        "94.04% on n=10,896 validation images": "98.46% on n=11,296 registered open-set test samples",
+        "ECE 0.084 on reference validation data": "ECE 0.0031 on registered open-set test data",
+        "Physical-device median and p95 pending": "Emulator mean 81.24 ms and p95 92.92 ms; physical device pending",
         "Held-out/reference validation images": "Protected held-out test images",
         "Implement numeric-ID-to-Unicode mapping and tests for five letters": "Completed: versioned numeric-ID-to-Unicode mapping and tests for five exposed letters",
+        "Completed: versioned numeric-ID-to-Unicode mapping and tests for five exposed letters": "Completed: verified 455-label model contract and Unknown/Invalid output",
+        "Firebase remains responsible for authenticated persistence, and the adult-facing Gemini feature is separated from child trace classification.": "Firebase remains responsible for authenticated persistence and authorized progress synchronization, while child trace classification stays on-device.",
+        "Cloud Functions / Gemini": "Firestore synchronization / rules",
+        "The project summary records approximately 87,141 training and 10,896 validation images across 454 numeric classes. Before the final thesis, the exact downloaded version, total directory counts, class distribution, license, writer metadata, random seed and checksums must be archived because public descriptions of the dataset contain differing total counts.": "The final open-set package registers 454 known Sinhala character classes plus an Unknown/Invalid class. Its 11,296-sample test set includes 400 unknown examples. Model and label hashes, test metrics and adapter evidence are archived with the repository; writer metadata remains unavailable and is treated as a validity limitation.",
+        "454-class custom CNN; 64×64 grayscale; TFLite; five-letter UI": "455-output open-set CNN; 64×64 grayscale; TFLite; curriculum tracing UI",
+        "Treat all 454 classes equally": "Treat known classes consistently and evaluate Unknown/Invalid separately",
+        "the accuracy, class-level behaviour and confidence calibration of the Sinhala letter CNN on the protected held-out test data;": "the known-class accuracy, unknown rejection, class-level behaviour and confidence calibration of the Sinhala letter CNN on the registered open-set test data;",
+        "a protected held-out CNN test set": "a registered open-set CNN test set",
         "Fix analyzer warnings/deprecation and replace stale widget test": "Completed: analyzer cleanup and replacement of the stale template test with project-specific tests",
         "Shipped model cannot currently be regenerated from the visible notebook.": "Final model can be regenerated from the registered Stage 3 pipeline; the obsolete MobileNet notebook is retained only as historical evidence.",
         "The repository notebook currently describes a different 128×128 MobileNetV2/TFJS pipeline, whereas the app ships a 64×64 custom-CNN TFLite model. The exact notebook that generated the shipped model must be recovered and archived with environment versions, dataset manifest, seed and SHA-256 hashes before final submission.": "The original repository notebook described an obsolete 128×128 MobileNetV2/TFJS path. A reproducible 64×64 custom-CNN pipeline was rebuilt from the final architecture and now archives environment versions, seed 42, the frozen manifest and SHA-256 identities for the protected experiment and deployed TFLite artifact.",
@@ -582,19 +626,19 @@ def chapter_four(doc: Document) -> None:
 
     doc.add_heading("4.2 Stakeholder Analysis", level=2)
     add_table(doc, ["Stakeholder", "Need / responsibility", "Influence", "Design response"], [
-        ("Grade 1 learner", "Large, simple controls; letter/word learning; supportive retry feedback", "High user impact", "Five verified tracing letters, audio cues, picture-supported choices and minimal text"),
+        ("Grade 1 learner", "Large, simple controls; letter/word learning; supportive retry feedback", "High user impact", "Picture-supported choices, tracing practice and minimal text"),
         ("Grade 2 learner", "Word construction, pillam practice, short stories and comprehension", "High user impact", "Separate Grade 2 tasks and grade-filtered content"),
         ("Parent / teacher", "Understand activity, progress and areas needing practice", "High decision influence", "Authenticated dashboard, scalar trace evidence and non-diagnostic wording"),
         ("Researcher/developer", "Reproducible models, measurable tests and traceable claims", "High technical influence", "Frozen manifests, model hashes, automated tests and reports"),
         ("Supervisor / university", "Methodological validity, ethics and assessable contribution", "High governance influence", "Evidence boundaries, IEEE citations, documented limitations and approval gates"),
-        ("Firebase / Gemini provider", "Secure and legitimate service use", "Infrastructure dependency", "App Check, timeouts, server-side API credential and local fallback"),
+        ("Firebase platform", "Secure identity and synchronized evidence", "Infrastructure dependency", "Authentication, Firestore rules, role-aware links and local fallback"),
     ], font_size=7.9)
 
     doc.add_heading("4.3 Operationalization of the Research Objectives", level=2)
     add_table(doc, ["Objective", "Question / evidence source", "Operational requirement", "Measure"], [
         ("RO1 Identify", "Literature and two-teacher exploratory input", "Capture early-literacy difficulties without claiming prevalence", "Traceable themes and requirement rationale"),
         ("RO2 Analyze", "HCR, readability, mobile and child-design literature", "Compare candidate algorithms and architectures", "Suitability matrix and explicit trade-offs"),
-        ("RO3 Develop", "Flutter repository and model assets", "Implement separated CNN, classifier, router and conversational service", "Passing functional and integration tests"),
+        ("RO3 Develop", "Flutter repository and model assets", "Implement separated CNN, classifier, deterministic coach and progress services", "Passing functional and integration tests"),
         ("RO4 Evaluate", "Frozen test split, parity data and emulator logs", "Quantify model and deployment performance", "Accuracy, macro-F1, top-k, ECE, parity and latency"),
     ], font_size=8.1)
 
@@ -603,23 +647,23 @@ def chapter_four(doc: Document) -> None:
     add_callout(doc, "Validity rule", "The two-teacher input is design evidence, not a representative survey. Percentages are therefore expressed as respondent counts (2/2 or 1/2), and no population prevalence or causal inference is made.", PALE_ORANGE)
 
     doc.add_heading("4.5 System and Model Analysis", level=2)
-    add_body(doc, "ReadBuddy AI is a hybrid mobile system with four deliberately separate intelligence components. The CNN performs only isolated Sinhala handwriting classification. The logistic model provides only a Grade 1/2 text-difficulty cross-check. The local intent router selects known learning functions and creates deterministic interactive exercises. Firebase AI Logic answers only unmatched conversational questions. This separation prevents a generative answer from being mistaken for model evidence and allows each component to be tested against a task-appropriate contract.")
+    add_body(doc, "NenaPotha AI separates prediction, content review, coaching and evidence synchronization. The CNN performs isolated Sinhala handwriting classification with an explicit Unknown/Invalid output. The logistic model provides only a Grade 1/2 text-difficulty cross-check. The deterministic My Coach service ranks available practice activities from recorded attempts and recent activity; it does not generate conversation. Progress services synchronize task summaries for authorized guardians and linked teachers. This separation prevents a recommendation from being mistaken for model evidence and allows each component to be tested against a task-appropriate contract.")
     add_table(doc, ["Component", "Input", "Output", "Primary failure handling"], [
         ("CNN", "64×64 grayscale trace", "Class ID, optional verified Unicode and confidence", "Unscored attempt with retry guidance"),
         ("Text classifier", "Authored Sinhala text features", "Grade 1/2 review flag", "Keep authored grade and request human review"),
-        ("Intent router", "English/Sinhala message", "Known intent, exercise or unknown", "Ask clarification or delegate unknown conversation"),
-        ("Firebase AI Logic", "Minimal conversational prompt", "Short child-friendly explanation", "Timeout/error/blocked friendly fallback"),
+        ("Smart learning coach", "Recent attempts and skill evidence", "Ranked practice plan", "Use a safe default activity when evidence is sparse"),
+        ("Progress analytics", "Task, quiz, tracing and daily activity records", "Learner/adult summaries", "Show an explicit no-data state"),
     ])
 
     doc.add_heading("4.6 Use Cases and Specifications", level=2)
     doc.add_picture(str(ASSETS / "use_case_diagram.png"), width=Inches(6.3))
     _center_last_picture(doc)
-    add_caption(doc, "Figure 4.1. Principal learner, adult and Firebase use cases within the ReadBuddy AI boundary.")
+    add_caption(doc, "Figure 4.1. Principal learner, adult and synchronized-evidence use cases within the NenaPotha AI boundary.")
     add_table(doc, ["Use case", "Precondition", "Main success flow", "Alternative / postcondition"], [
         ("UC-01 Trace letter", "Grade 1 profile; model loaded; supported letter", "Learner draws → taps Check → CNN predicts → mapping and threshold evaluated", "Failure remains unscored; typed evidence is stored only for successful inference"),
-        ("UC-02 Read story", "Profile and grade selected", "System filters story → displays text → optional TTS → quiz", "Classifier disagreement flags author review; learner's selected content is not silently relabelled"),
-        ("UC-03 Request exercise", "AI Help available", "Router detects complete Sinhala/English words → creates one question with three options", "Ambiguous known request produces clarification"),
-        ("UC-04 Ask conversation", "Firebase initialized and network available", "Unknown local intent → App Check → Firebase AI Logic → bounded answer", "Timeout, blocked or unavailable reply becomes a friendly fallback"),
+        ("UC-02 Read story", "Profile and grade selected", "System filters story → displays text → learner completes comprehension task", "Classifier disagreement flags author review; content is not silently relabelled"),
+        ("UC-03 Follow coach plan", "At least a learner profile exists", "Coach reads evidence → prioritizes suitable activity → learner opens task", "Sparse evidence produces a grade-appropriate default plan"),
+        ("UC-04 Link student", "Authenticated teacher and valid student code", "Teacher submits code → relationship is validated → student appears by grade", "Invalid or expired code produces a clear error without exposing learner data"),
         ("UC-05 Review progress", "Authenticated parent/teacher access", "Load task attempts → aggregate scores and trace evidence → display guidance", "No diagnostic label; empty state explains how to collect evidence"),
     ], font_size=7.5)
 
@@ -627,7 +671,7 @@ def chapter_four(doc: Document) -> None:
     doc.add_picture(str(ASSETS / "class_model_diagram.png"), width=Inches(6.4))
     _center_last_picture(doc)
     add_caption(doc, "Figure 4.2. Core domain and service class model for evidence-aware learning activities.")
-    add_body(doc, "The model separates mutable learner records from service contracts. TaskAttempt is the evidence boundary: it can retain a score, timestamp and optional model metadata without retaining a raw trace image. LetterClassifierService owns tensor validation and prediction identity; AIService owns deterministic routing; FirebaseAIChatService owns the external conversational boundary.")
+    add_body(doc, "The model separates mutable learner records from service contracts. TaskAttempt is the evidence boundary: it can retain a score, timestamp and optional model metadata without retaining a raw trace image. LetterClassifierService owns tensor validation and prediction identity, SmartLearningCoachService converts evidence into a deterministic practice plan, and ProgressAnalyticsService produces learner and authorized-adult summaries.")
 
     doc.add_heading("4.8 Activity Diagram", level=2)
     doc.add_picture(str(ASSETS / "trace_activity_diagram.png"), width=Inches(5.45))
@@ -640,23 +684,23 @@ def chapter_four(doc: Document) -> None:
     add_caption(doc, "Figure 4.4. Sequence of local CNN inference, typed mapping and scalar evidence storage.")
     doc.add_picture(str(ASSETS / "chat_sequence_diagram.png"), width=Inches(6.45))
     _center_last_picture(doc)
-    add_caption(doc, "Figure 4.5. Sequence of deterministic local routing and protected conversational fallback.")
+    add_caption(doc, "Figure 4.5. Sequence of deterministic evidence-based coaching and activity selection.")
 
     doc.add_heading("4.10 Deployment and Proposed Architecture", level=2)
     doc.add_picture(str(ASSETS / "deployment_trust_boundary.png"), width=Inches(6.35))
     _center_last_picture(doc)
     add_caption(doc, "Figure 4.6. Deployment structure and privacy/trust boundaries.")
-    add_body(doc, "Most child-facing intelligence remains on the Android device. Authentication and progress synchronization use Firebase. Firebase AI Logic is reached only for unmatched conversation; its proxy and App Check protect the Gemini Developer API credential so it is not embedded in Dart source or the APK [25], [26]. This design keeps the system usable for core learning when conversational AI is unavailable.")
+    add_body(doc, "Child-facing classification, content review and coaching decisions run on the Android device. Firebase Authentication establishes the adult identity, while Firestore synchronizes progress and validates guardian–teacher relationships. Raw trace images are not required for the synchronized record. Core learning remains available from bundled content even when the network is unavailable; cloud-backed dashboards refresh when connectivity returns.")
 
     doc.add_heading("4.11 Functional and Non-functional Requirements", level=2)
     add_table(doc, ["ID", "Functional requirement", "Priority", "Verification"], [
         ("FR-01", "Support only Grade 1 and Grade 2 content and profiles", "Must", "Widget and scope tests"),
-        ("FR-02", "Provide bilingual Sinhala/English navigation and commands", "Must", "Localization and router tests"),
+        ("FR-02", "Provide independent interface-language and learning-language controls", "Must", "Localization and language-independence tests"),
         ("FR-03", "Classify supported Sinhala traces using bundled TFLite", "Must", "Model contract and integration benchmark"),
-        ("FR-04", "Map only independently verified class IDs to Unicode", "Must", "Five deterministic mapping cases"),
-        ("FR-05", "Provide grade-filtered reading, TTS and comprehension", "Must", "Functional reading tests"),
-        ("FR-06", "Create local three-option letter exercises", "Must", "English/Sinhala chatbot tests"),
-        ("FR-07", "Use Firebase AI Logic only for unknown conversation", "Should", "Prompt/router/fallback tests"),
+        ("FR-04", "Map model class IDs through the versioned 455-label contract", "Must", "Label and model-contract tests"),
+        ("FR-05", "Provide grade-filtered reading and comprehension", "Must", "Functional reading tests"),
+        ("FR-06", "Generate an evidence-based practice plan in My Coach", "Must", "Coach prioritization tests"),
+        ("FR-07", "Allow teachers to link students by code and review authorized evidence", "Must", "Linking and dashboard tests"),
         ("FR-08", "Store progress and scalar trace evidence", "Must", "Serialization and aggregation tests"),
         ("FR-09", "Show adult progress without diagnostic wording", "Must", "UI/content inspection"),
         ("FR-10", "Classify authored text as a Grade 1/2 review signal", "Could", "Classifier unit tests and limitation audit"),
@@ -665,8 +709,8 @@ def chapter_four(doc: Document) -> None:
         ("NFR-01", "Usability", "Large touch targets, consistent navigation and child-friendly feedback", "Theme and widget tests; screenshot review"),
         ("NFR-02", "Performance", "Interactive on-device inference; report mean and p95 rather than hide tails", "Android emulator benchmark"),
         ("NFR-03", "Reliability", "Reject invalid tensor/label contracts; provide explicit fallbacks", "Negative-path tests"),
-        ("NFR-04", "Privacy", "No raw trace upload; minimize conversational prompt data", "Architecture and code inspection"),
-        ("NFR-05", "Security", "Authenticated access and App Check for Firebase AI", "Configuration/code inspection"),
+        ("NFR-04", "Privacy", "No raw trace upload; synchronize only necessary task evidence", "Architecture and code inspection"),
+        ("NFR-05", "Security", "Authenticated role-aware access for guardians and linked teachers", "Configuration, rules and code inspection"),
         ("NFR-06", "Maintainability", "Central theme, typed services, versioned mapping and model card", "Repository structure and analyzer"),
         ("NFR-07", "Accessibility", "Contrast, target size and labels suitable for mobile use", "Flutter accessibility guidance [27] and future device audit"),
         ("NFR-08", "Cost", "Core system and development path use free/open-source tooling", "Technology and service-plan review"),
@@ -680,7 +724,7 @@ def chapter_four(doc: Document) -> None:
 def chapter_five(doc: Document) -> None:
     doc.add_heading("Chapter 05 — Implementation and Design", level=1)
     doc.add_heading("5.1 Chapter Overview", level=2)
-    add_body(doc, "This chapter explains how ReadBuddy AI was implemented and why each significant design decision supports the research. Generic account screens are mentioned only where they enforce a trust boundary; emphasis is placed on the two research models, the bilingual intent architecture, evidence-aware progress, child-facing interaction and deployment controls.")
+    add_body(doc, "This chapter explains how NenaPotha AI was implemented and why each significant design decision supports the research. Generic account screens are mentioned only where they enforce a trust boundary; emphasis is placed on the two research models, deterministic evidence-based coaching, synchronized progress, child-facing interaction and deployment controls.")
 
     doc.add_heading("5.2 Technology Selection and Justification", level=2)
     add_table(doc, ["Technology", "Purpose", "Reason for selection", "Trade-off"], [
@@ -689,35 +733,35 @@ def chapter_five(doc: Document) -> None:
         ("scikit-learn", "Interpretable Grade 1/2 logistic model", "Transparent coefficients and small deployment footprint", "Insufficient evidence at n=26 [21]"),
         ("TensorFlow Lite", "Offline CNN inference", "Low-latency mobile execution and no trace upload", "Operator/device differences require parity and runtime testing"),
         ("Firebase Auth/Firestore", "Identity and progress persistence", "Existing Flutter support and role-aware cloud synchronization", "Network dependency for synchronized data"),
-        ("Firebase AI Logic", "Unmatched conversational questions", "Official Dart SDK, App Check, server-side credential and free-tier path [25]", "Availability, quota and generated-answer uncertainty"),
+        ("Deterministic coach rules", "Prioritized practice guidance", "No paid API, reproducible outputs and direct traceability to attempts", "Quality depends on the recorded evidence and rule design"),
         ("Git and model hashes", "Version and evidence control", "Links claims to exact source/model artifacts", "Requires disciplined artifact registration"),
     ], font_size=7.7)
 
     doc.add_heading("5.3 Component 1 — Sinhala Letter CNN", level=2)
-    add_body(doc, "The final training pipeline begins by hashing every source image. Exact duplicates are assigned as a group so that the same byte content cannot appear in both fitting and evaluation data. Seven cross-label conflicts are quarantined. The remaining 79,788 unique samples are stratified into 70% training, 15% validation and 15% test partitions with seed 42. The test partition is untouched until validation-based model selection is complete.")
+    add_body(doc, "The training pipeline begins by hashing source images so exact duplicates cannot cross data partitions. The original 454-class model was extended with an explicit Unknown/Invalid output and invalid scribble examples. The registered open-set evaluation contains 11,296 test samples, including 400 unknown examples. A later one-writer captured adapter was accepted only after its replay-data accuracy loss remained within the deployment gate; captured-sample fit is reported separately and is not treated as independent child-test accuracy.")
     add_equation(doc, "x′ = grayscale(resize(compositeWhite(PNG), 64, 64)) / 255")
-    add_body(doc, "The network applies 32, 64 and 128 3×3 convolution filters; max pooling follows the first two convolutions. The 18,432-value flattened representation feeds a 128-unit dense layer, dropout 0.30 and a 454-way softmax. Adam (learning rate 0.001) minimizes sparse categorical cross-entropy in batches of 64 for at most 40 epochs. Early stopping monitors validation loss and restores the best weights.")
-    add_code(doc, "ALGORITHM 1 — LEAKAGE-AWARE CNN PIPELINE\nfor each publisher image:\n    decode, validate label 1..454, compute SHA-256\nquarantine any hash associated with more than one label\nkeep every remaining identical-hash group in one seeded split\ntrain custom CNN on train; select checkpoint using validation only\nevaluate selected checkpoint once on protected test\nconvert to TFLite; require ≥98% Keras/TFLite top-1 agreement")
-    add_body(doc, "The Flutter service validates float32 input [1,64,64,1], float32 output [1,454], exactly 454 unique numeric labels and the supported class range before prediction. Output index i maps to one-based dataset class ID labels[i]. Only IDs 1, 2, 12, 25 and 250 are presently mapped to අ, ආ, ක, ග and ස. Any other result is displayed internally as class:<ID> rather than guessed as a Sinhala character.")
+    add_body(doc, "The network uses three convolutional stages followed by a dense representation, dropout and a 455-way softmax. Adam and sparse categorical cross-entropy optimize the known-letter and invalid classes. The deployed asset accepts float32 [1,64,64,1] grayscale input and emits 455 probabilities. The additional output makes an invalid scribble a learnable alternative instead of forcing every input into one of the 454 known Sinhala character classes.")
+    add_code(doc, "ALGORITHM 1 — OPEN-SET CNN PIPELINE\nvalidate image and class identity; compute SHA-256\nkeep duplicate groups inside one data partition\ntrain 454 known outputs plus Unknown/Invalid\nselect checkpoint on validation evidence\nevaluate once on registered open-set test\nadapt with consented captured samples only behind replay gate\nconvert to TFLite; verify output count, parity and runtime")
+    add_body(doc, "The Flutter service validates model and label contracts before accepting inference: one 64 × 64 grayscale channel, 455 output scores and 455 ordered class labels. Prediction evidence contains model version, expected target, predicted class, confidence and latency. The UI combines open-set identity evidence with shape-overlap checks; an unsupported, low-quality or wrong-letter prediction therefore receives a retry state instead of a misleading similarity percentage. The final model file is 2,528,104 bytes with SHA-256 6D3303F14329E72ADA074C1A5C2974506778EA2681E1F4F3704655A44973565C.")
 
     doc.add_heading("5.4 Component 2 — Grade 1/2 Text-Difficulty Proof of Concept", level=2)
     add_body(doc, "The text component extracts word count, mean word length and mean sentence length from authored content. A binary logistic-regression equation estimates a Grade 2 score; the coefficients are ported to Dart so classification is offline and deterministic. This model does not replace the authored grade label. It acts as a quality-control signal: agreement increases confidence in content selection, while disagreement requests human review.")
     add_equation(doc, "P(Grade 2 | x) = 1 / (1 + exp(−(β₀ + β₁words + β₂meanWordLength + β₃meanSentenceLength)))")
     add_callout(doc, "Proof-of-concept boundary", "The corpus contains only 26 authored texts (9 Grade 1 and 17 Grade 2). Its 69.2% resubstitution accuracy is only 3.8 percentage points above the 65.4% majority training baseline and cannot support a production-grade generalization claim.", PALE_ORANGE)
 
-    doc.add_heading("5.5 Hybrid Bilingual Assistant", level=2)
-    add_body(doc, "The local router normalizes case and punctuation and matches complete tokens rather than substrings. It recognizes Grade 1/2 exercise, letter, choose/select, task, remember, pronunciation, reading, writing, help, progress, summary, quiz and greeting intentions in English and Sinhala. A letter-selection request produces a real interactive question with three options and a stored correct answer. If a request is ambiguous but appears task-oriented, the assistant asks which activity and grade the user wants. Only genuinely unmatched conversation is forwarded to Firebase AI Logic.")
-    add_code(doc, "ALGORITHM 2 — HYBRID CHAT ROUTING\nroute = localIntentRouter(message, language, profileGrade)\nif route has deterministic response or exercise:\n    render locally without network\nelse:\n    show loading state\n    request Firebase AI Logic with App Check and timeout\n    if answer is non-empty and not blocked: render bounded answer\n    else: render friendly retry/activity fallback")
-    add_body(doc, "The AI service uses the Gemini Developer API through Firebase AI Logic. The proxy retains the provider credential server-side, while App Check verifies that calls originate from an authorized application [25], [26]. Empty candidates, empty content, blocked responses, timeouts and SDK failures are logged diagnostically but converted to child-friendly messages. Learner names, progress, handwriting images and CNN results are excluded from the conversational prompt.")
+    doc.add_heading("5.5 Evidence-based Smart Learning Coach", level=2)
+    add_body(doc, "My Coach replaces the earlier conversational concept with a smaller and more defensible feature. It reads the learner's recorded completion, recent attempts and skill-level summaries, then applies deterministic priority rules to choose a short practice plan. Weak or repeatedly missed skills receive priority; mastered activities are not repeatedly promoted; and a new learner receives a grade-appropriate starter activity. Every recommendation can therefore be explained by the stored evidence that caused it.")
+    add_code(doc, "ALGORITHM 2 — DETERMINISTIC COACH PLAN\nload recent task, quiz and tracing summaries\nif evidence is empty: return grade-appropriate starter activity\ncompute priority from low score, repeated errors and recency\nremove unavailable or already-mastered activities\nrank remaining activities with stable tie-breaking\nshow the reason and navigate to the selected task")
+    add_body(doc, "This design avoids a paid service, unpredictable generated advice and a second child-facing dialogue interface. It also preserves offline usefulness because recommendation logic runs locally from cached evidence. The coach is not presented as a clinical, psychological or intelligence assessment. It is a transparent study-plan helper whose output remains bounded by the activities already available in NenaPotha AI.")
 
     doc.add_heading("5.6 Reading, Comprehension and Learning Modules", level=2)
-    add_body(doc, "The Grade 1 path emphasizes letter exploration, example words, picture-supported initial-letter selection, letter matching and tracing. The Grade 2 path introduces picture-supported pillam exploration, explicit consonant-plus-sign sound building, word construction, pillam recognition/fill tasks, longer texts and inferential questions. Reading content is filtered by the stored grade, can be spoken through local text-to-speech and is followed by rule-generated comprehension questions. This design follows the research boundary: the CNN is not used to generate stories, and the generative service is not used to grade handwriting.")
+    add_body(doc, "The Grade 1 path emphasizes letter exploration, example words, picture-supported initial-letter selection, letter matching and tracing. The Grade 2 path introduces picture-supported pillam exploration, explicit consonant-plus-sign construction, word building, pillam recognition/fill tasks, longer texts and inferential questions. Reading content is filtered by the stored grade and followed by comprehension questions. This design follows the research boundary: the CNN evaluates isolated tracing input, while authored stories and tasks remain curriculum-controlled content.")
 
     doc.add_heading("5.7 Progress and Evidence Design", level=2)
     add_body(doc, "Task results record the task identity, score and timestamp. Successfully inferred tracing attempts additionally store expected letter, numeric class ID, optional mapped letter, confidence, inference latency, correctness and model version. Daily activity synchronization distinguishes active learning days from app-open-only days. The learner progress service aggregates attempts, accuracy, tracing evidence and skill history, while the authenticated teacher dashboard groups linked learners by grade and exposes individual activity, task and coaching summaries. Evidence-based coaching identifies repeatedly weak items, mastered skills and recent improvement without producing a diagnostic label. Raw tracing images and direct student identifiers are excluded from the sanitized research export.")
 
     doc.add_heading("5.8 User-interface Design and Execution Evidence", level=2)
-    add_body(doc, "The app-wide visual system uses a consistent indigo identity with semantic accents for learning, AI help and progress. Material 3 cards, rounded surfaces, minimum 48-pixel primary controls, bilingual labels and predictable five-area navigation reduce interaction cost for young learners and adults. The home story follows the selected grade rather than always displaying Grade 2 content. These choices should still be validated with accessibility scanning and supervised user testing rather than assumed effective [27].")
+    add_body(doc, "The app-wide visual system uses a consistent indigo identity with semantic accents for learning, coaching and progress. Material 3 cards, rounded surfaces, minimum 48-pixel primary controls, bilingual labels and predictable five-area navigation reduce interaction cost for young learners and adults. Interface language is independent from learning language, so an English-medium learner may study Sinhala without changing every navigation label. The home story follows the selected grade rather than always displaying Grade 2 content. These choices still require accessibility scanning and supervised user testing rather than being assumed effective [27].")
     if SCREENSHOT_COMPOSITE.exists():
         doc.add_picture(str(SCREENSHOT_COMPOSITE), width=Inches(5.6))
         _center_last_picture(doc)
@@ -726,18 +770,18 @@ def chapter_five(doc: Document) -> None:
 
     doc.add_heading("5.9 Security, Privacy and Failure-state Implementation", level=2)
     add_bullets(doc, [
-        "No Gemini API key is stored in Dart, env.json or the APK; Firebase AI Logic mediates access.",
-        "Debug App Check is limited to development; Play Integrity is the release provider.",
+        "No chatbot, speech-recognition service or paid generative API is required by the final child workflow.",
+        "Firebase Authentication and Firestore rules restrict guardian and linked-teacher access.",
         "The CNN runs locally and raw traces do not need to leave the device.",
         "A classifier loading/inference failure cannot be marked correct through a geometric fallback.",
-        "The assistant exposes loading, timeout, blocked, empty-response and friendly fallback states.",
+        "Network-backed evidence screens expose loading, empty, retry and permission-denied states.",
         "Progress language uses practice indicators rather than diagnostic or clinical labels.",
         "Model version and SHA-256 identity connect app evidence to the evaluated artifact.",
     ])
     add_body(doc, "These controls operationalize the reliability, privacy, transparency and safety concerns emphasized by the NIST AI Risk Management Framework [28]. They do not eliminate all risks; they make known risks measurable and prevent unsupported output from being silently presented as evidence.")
 
     doc.add_heading("5.10 Chapter Summary", level=2)
-    add_body(doc, "Chapter 5 described the implemented mobile, machine-learning and conversational layers. The most important engineering contribution is not any single model: it is the separation of responsibilities, leakage-aware data handling, explicit label identity, honest abstention and evidence-aware integration. Chapter 6 tests these claims quantitatively and functionally.")
+    add_body(doc, "Chapter 5 described the implemented mobile, machine-learning, coaching and evidence layers. The most important engineering contribution is not any single model: it is the separation of responsibilities, leakage-aware data handling, explicit label identity, honest abstention and evidence-aware integration. Chapter 6 tests these claims quantitatively and functionally.")
     doc.add_page_break()
 
 
@@ -752,7 +796,7 @@ def chapter_six(doc: Document) -> None:
         "Train the custom CNN and low-capacity control using the same manifest.",
         "Select the checkpoint using validation data and evaluate once on protected test data.",
         "Convert the selected network and verify Keras–TFLite prediction parity.",
-        "Run service, mapping, routing, persistence and widget tests.",
+        "Run service, mapping, coaching, persistence and widget tests.",
         "Benchmark the exact bundled model through the Android integration path.",
         "Interpret technical evidence separately from unperformed child usability and learning studies.",
     ])
@@ -761,21 +805,21 @@ def chapter_six(doc: Document) -> None:
     add_table(doc, ["ID", "Test and eligibility rationale", "Expected result", "Observed status"], [
         ("TC-01", "Analyzer — detects source-level type/lint issues", "No issues", "Pass"),
         ("TC-02", "Dataset integrity — prevents exact duplicate leakage", "All hash groups remain in one split; conflicts quarantined", "Pass"),
-        ("TC-03", "Model tensor contract — prevents incompatible assets", "[1,64,64,1] input and [1,454] output accepted", "Pass"),
-        ("TC-04", "Label contract — prevents numeric/Unicode identity errors", "454 unique IDs and five mappings verified", "Pass"),
-        ("TC-05", "Trace decision — protects stored/UI agreement", "Expected mapping and ≥0.50 confidence both required", "Pass"),
+        ("TC-03", "Model tensor contract — prevents incompatible assets", "[1,64,64,1] input and [1,455] output accepted", "Pass"),
+        ("TC-04", "Label contract — prevents output identity errors", "455 ordered labels including Unknown/Invalid", "Pass"),
+        ("TC-05", "Trace decision — protects stored/UI agreement", "Expected identity, open-set and shape gates agree", "Pass"),
         ("TC-06", "Failure path — avoids false success", "Unavailable inference remains unscored", "Pass"),
-        ("TC-07", "English router — whole-word exercise request", "Interactive three-option Grade 1/2 exercise", "Pass"),
-        ("TC-08", "Sinhala router — bilingual equivalence", "Same deterministic route for Sinhala request", "Pass"),
-        ("TC-09", "Firebase AI fallback — safe asynchronous states", "Loading, timeout/error/blocked friendly response", "Pass in automated path; service availability external"),
+        ("TC-07", "Coach prioritization — low-performing skill", "Weak available activity is ranked first with reason", "Pass"),
+        ("TC-08", "Language independence — interface versus learning", "Either interface language can access Sinhala or English learning", "Pass"),
+        ("TC-09", "Teacher link and empty states", "Authorized learner evidence or clear no-data/error state", "Pass"),
         ("TC-10", "Android integration benchmark — real mobile runtime path", "Load exact bundled model and complete repeated inference", "Pass on Android 14 emulator"),
     ], font_size=7.2)
 
     doc.add_heading("6.4 Functional Testing Results", level=2)
-    add_body(doc, "All 125 current Flutter tests pass. The suite exercises language selection, five-area navigation, Grade 1/2 learning paths, verified pillam names and picture coverage, pillam detail navigation, story comprehension, progress analytics, teacher coaching, daily activity evidence, mapping validation, threshold decisions, trace evidence serialization and aggregation, privacy-preserving exports, English/Sinhala chat routing, exercise generation, Firebase prompt boundaries and friendly fallback messages. Python tests validate deterministic splitting, duplicate containment, conflicting-label rejection and frozen-manifest integrity. Static analysis reports no issues. The Android integration test loads the bundled model and executes native inference.")
+    add_body(doc, "All 130 current Flutter tests pass. The suite exercises language selection, five-area navigation, Grade 1/2 learning paths, verified pillam names and picture coverage, pillam detail navigation, story comprehension, progress analytics, deterministic coaching, daily activity evidence, model-contract validation, trace decisions, evidence serialization and aggregation, privacy-preserving exports, teacher linking and friendly empty/error states. Python checks validate deterministic preparation, duplicate containment, open-set evaluation and deployment registration. Static analysis reports no issues. The Android integration test loads the exact bundled model and executes native inference.")
     add_table(doc, ["Verification layer", "Latest recorded result", "Interpretation"], [
         ("Flutter static analysis", "No issues found", "Source-level quality gate passed"),
-        ("Flutter unit/widget tests", "125/125 tests passed", "Specified decision, evidence and UI behaviours passed"),
+        ("Flutter unit/widget tests", "130/130 tests passed", "Specified decision, evidence and UI behaviours passed"),
         ("Python pipeline tests", "Dataset/split integrity tests pass", "Reproducibility controls behave as designed"),
         ("Android CNN integration", "Model load and 30 measured inference runs pass", "On-device path is technically feasible on emulator"),
         ("Physical-device pilot", "Workflow implemented; phone result pending", "No physical-device claim is made"),
@@ -784,10 +828,10 @@ def chapter_six(doc: Document) -> None:
 
     doc.add_heading("6.5 Non-functional Testing", level=2)
     add_table(doc, ["Quality attribute", "Method", "Result", "Limitation"], [
-        ("Performance", "5 warm-ups + 30 native emulator runs", "Mean 83.58 ms; p95 140.79 ms", "Android x86_64 emulator, not ARM phone"),
+        ("Performance", "5 warm-ups + 30 native emulator runs", "Mean 81.24 ms; p95 92.92 ms", "Android 14 emulator, not a physical ARM phone"),
         ("Portability", "Flutter Android build/install/launch", "Pass on Android 14 emulator", "iOS and low-end phones not benchmarked"),
         ("Reliability", "Invalid labels/tensors and inference failures", "Rejected or unscored", "Long-duration stress testing pending"),
-        ("Security", "Credential/code/config audit and App Check architecture", "No Gemini key embedded; protected proxy design", "Production attestation must remain configured"),
+        ("Security", "Authentication, role and data-flow inspection", "Role-aware guardian and linked-teacher boundary", "Firestore rules require deployment review"),
         ("Privacy", "Data-flow and sanitized export inspection", "Raw traces and direct identifiers excluded", "Firestore rules require periodic review"),
         ("Maintainability", "Analyzer, modular services, versioned artifacts", "No analyzer issues; typed boundaries", "Test coverage percentage not claimed"),
         ("Accessibility", "Theme/widget checks and minimum target design", "Implemented design baseline", "Formal scanner and child observation pending"),
@@ -796,15 +840,15 @@ def chapter_six(doc: Document) -> None:
     doc.add_heading("6.6 CNN Results", level=2)
     doc.add_picture(str(ASSETS / "cnn_protected_test_metrics.png"), width=Inches(6.35))
     _center_last_picture(doc)
-    add_caption(doc, "Figure 6.1. Performance of the custom CNN on the protected 11,984-image test partition.")
-    add_table(doc, ["Measure", "Custom CNN", "Low-capacity control", "Research interpretation"], [
-        ("Top-1 accuracy", "88.61%", "0.25%", "Custom CNN learns useful structure; control is near 1/454 chance"),
-        ("95% Wilson CI", "88.03%–89.17%", "Not emphasized", "Quantifies image-level sampling uncertainty"),
-        ("Macro precision", "88.86%", "<0.01%", "Per-class precision remains high on average"),
-        ("Macro recall / balanced accuracy", "88.11%", "0.22%", "Class-balanced performance is close to aggregate accuracy"),
-        ("Macro-F1", "88.14%", "<0.01%", "Precision/recall balance across 454 classes"),
-        ("Top-2 / Top-3", "92.05% / 93.51%", "0.49% / 0.73%", "Correct label often remains among close alternatives"),
-        ("ECE / log loss", "0.0515 / 0.7319", "0.00005 / 6.1118", "Control's low ECE is meaningless with uniform near-chance predictions"),
+    add_caption(doc, "Figure 6.1. Registered open-set CNN performance on 11,296 test samples.")
+    add_table(doc, ["Measure", "Registered result", "Research interpretation", "Boundary"], [
+        ("Overall accuracy", "98.46%", "High aggregate performance over known and invalid inputs", "Reference test distribution"),
+        ("Letter-only accuracy", "98.51%", "Known Sinhala classes are usually identified correctly", "Not child-touchscreen accuracy"),
+        ("Macro-F1", "98.73%", "Strong class-balanced precision/recall", "Class support still varies"),
+        ("Top-3 accuracy", "99.43%", "Correct known class is rarely outside three candidates", "UI still applies expected-target gate"),
+        ("Unknown recall", "97.00%", "Most registered invalid samples are rejected", "400 unknown test samples"),
+        ("Invalid false acceptance", "3.00%", "A small residual risk of invalid-as-letter prediction remains", "Requires UI shape and identity gates"),
+        ("Calibration error", "0.0031", "Probabilities are well aligned on the registered test", "Distribution shift remains possible"),
     ], font_size=7.4)
     for path, caption in [
         (ROOT / "deliverables" / "stage6_evaluation" / "custom_cnn_training_history.png", "Figure 6.2. Custom CNN training and validation history."),
@@ -816,18 +860,19 @@ def chapter_six(doc: Document) -> None:
             doc.add_picture(str(path), width=Inches(6.2))
             _center_last_picture(doc)
             add_caption(doc, caption)
-    add_body(doc, "The CNN result is materially more credible than the earlier 94.04% publisher-split validation figure because the final protocol detected 8,551 hashes crossing publisher splits and rebuilt a disjoint exact-hash split. The lower but protected 88.61% test score is therefore the headline result. However, images may still be correlated by writer because reliable writer IDs were not available; the Wilson interval can consequently understate uncertainty.")
+    add_body(doc, "The registered open-set result is the headline CNN evidence because it evaluates both known letters and invalid inputs under one 455-output contract. It directly addresses the earlier failure mode in which a scribble had to be classified as some valid letter. The one-writer adaptation improved fit to the author's captured traces from 16.95% to 72.88%, while held-out replay accuracy changed from 97.02% to 95.85%, a 1.17 percentage-point drop that passed the deployment gate. The 59 mapped captured samples used for fitting are not an independent evaluation set, and the result cannot be generalized to children or other writers.")
 
     doc.add_heading("6.7 Conversion and Deployment Results", level=2)
     add_table(doc, ["Evidence", "Result"], [
-        ("Evaluated TFLite size", "2,527,920 bytes (approximately 2.41 MiB)"),
-        ("TFLite SHA-256", "ad082e94b4f80f4b55d265f98c057972107dfd1d5245675cebc1c56ba0e0b189"),
-        ("Parity sample count", "100 registered protected samples"),
-        ("Keras–TFLite top-1 agreement", "99.00%"),
-        ("Mean absolute probability difference", "0.00002762"),
-        ("Android 14 emulator native inference", "Mean 83.58 ms; p95 140.79 ms over 30 measured runs"),
+        ("Evaluated TFLite size", "2,528,104 bytes (approximately 2.41 MiB)"),
+        ("TFLite SHA-256", "6D3303F14329E72ADA074C1A5C2974506778EA2681E1F4F3704655A44973565C"),
+        ("Output labels", "455 lines; SHA-256 7A4E0269FB58F039EBDC247C0A6EEC76764D82351467DA4D98F93D3378935B91"),
+        ("Parity sample count", "100 registered samples"),
+        ("TFLite top-1 parity", "100.00%"),
+        ("Android 14 emulator native inference", "Mean 81.24 ms; p50 78.60 ms; p95 92.92 ms over 30 measured runs"),
+        ("End-to-end inference", "Mean 85.38 ms; p95 96.90 ms"),
     ])
-    add_body(doc, "The exact TFLite hash matches the evaluated conversion, bundled Flutter asset and runtime evidence. This identity check is important because a benchmark of a different artifact would not validate the model reported in the results. Ninety-nine percent top-1 parity exceeds the predefined 98% gate, though one disagreement and a maximum probability difference of 0.0834 justify retaining versioned conversion tests.")
+    add_body(doc, "The exact TFLite hash and 455-line label hash identify the artifacts bundled in the Flutter application. This identity check matters because a benchmark of a different model or reordered labels would not validate the deployed behavior. The 100-sample parity check preserved every top-1 class, and the Android test confirmed the expected input and output tensors before measuring latency. The benchmark supports interactive emulator feasibility, not performance on every physical device.")
 
     doc.add_heading("6.8 Text-classifier Results", level=2)
     add_body(doc, "The logistic text classifier obtained 69.2% training accuracy on 26 samples. The majority-class rule would obtain 65.4% on the same labels, so the observed advantage is small and measured on the data used for fitting. A random split would produce too few cases for a stable conclusion, while standard cross-validation would still reuse nearly identical authored patterns. The result supports only the feasibility of implementing an interpretable pipeline. It does not demonstrate that the model can grade unseen Sinhala school texts.")
@@ -841,7 +886,7 @@ def chapter_six(doc: Document) -> None:
     doc.add_heading("6.9 Discussion", level=2)
     add_body(doc, "The results answer the technical part of the research question. A leakage-aware CNN can provide fast offline class predictions within a Flutter Grade 1 tracing workflow, and explicit numeric-to-Unicode mapping prevents a high model score from hiding an application-level identity error. Compared with prior Sinhala HCR studies [6]–[8], direct numerical superiority cannot be claimed because class sets, writers and split protocols differ. The main contribution is the auditable split, protected test, conversion identity and integrated failure semantics.")
     add_body(doc, "The text component illustrates the opposite evidence condition. Its transparent equation is attractive for teachers and mobile deployment, consistent with interpretable low-resource readability work [9]–[15] and word-level decoding research [30], yet the sample is too small for credible generalization. Retaining it as a content-review signal is more defensible than presenting 69.2% as test accuracy. This contrast demonstrates why each AI component must be evaluated on its own data and construct.")
-    add_body(doc, "The hybrid assistant improves functional coverage without changing the research model claims. Deterministic local routes answer predictable learning requests consistently and without network cost. Firebase AI Logic is reserved for conversation and protected by App Check, as recommended in the official architecture [25], [26]. Generated answers remain a possible source of error and should support adults or low-stakes explanation rather than determine grades, diagnoses or stored model outcomes.")
+    add_body(doc, "The deterministic coach improves functional coverage without introducing a third predictive model. Its plan is reproducible from task evidence, available offline and bounded to implemented activities. This makes the rationale inspectable by a teacher and prevents generated language from determining grades, diagnoses or stored outcomes. The design is intentionally simpler than a chatbot because the research contribution concerns handwriting recognition, content difficulty and learning evidence rather than open-domain conversation.")
     add_body(doc, "The broader educational question remains open. Reviews and controlled literacy-training evidence show promise but also heterogeneity and context-dependent effects [4], [29]. NenaPotha AI's technical success therefore cannot be translated into literacy gain without an ethics-approved field design. Future evaluation must measure usability and learning separately from recognition accuracy, retain children by writer group during analysis, and compare against an active conventional-practice condition.")
 
     doc.add_heading("6.10 Threats to Validity", level=2)
@@ -856,37 +901,37 @@ def chapter_six(doc: Document) -> None:
     ], font_size=7.5)
 
     doc.add_heading("6.11 Chapter Summary", level=2)
-    add_body(doc, "Chapter 6 reported the verified testing and evaluation outcomes. The protected CNN test result, Keras–TFLite parity, artifact identity, automated tests and emulator benchmark support the technical feasibility of ReadBuddy AI. The text classifier remains a transparent proof of concept, and participant outcomes remain unmeasured. These evidence boundaries guide the objective assessment and future recommendations in Chapter 7.")
+    add_body(doc, "Chapter 6 reported the verified testing and evaluation outcomes. The open-set CNN test result, adaptation gate, TensorFlow Lite parity, artifact identity, 130 automated tests and emulator benchmark support the technical feasibility of NenaPotha AI. The text classifier remains a transparent proof of concept, and participant outcomes remain unmeasured. These evidence boundaries guide the objective assessment and future recommendations in Chapter 7.")
     doc.add_page_break()
 
 
 def chapter_seven(doc: Document) -> None:
     doc.add_heading("Chapter 07 — Concluding Remarks", level=1)
     doc.add_heading("7.1 Research Conclusion", level=2)
-    add_body(doc, "This research designed, developed and technically evaluated ReadBuddy AI, a bilingual Grade 1–2 mobile reading assistant that integrates offline Sinhala letter recognition, grade-aware content review, deterministic learning routes and protected conversational support. The study demonstrates that trustworthy integration requires more than model accuracy: duplicate-aware data management, explicit label identity, conversion parity, failure-state design, privacy boundaries and claim discipline are equally important.")
+    add_body(doc, "This research designed, developed and technically evaluated NenaPotha AI, a bilingual Grade 1–2 mobile reading and comprehension assistant that integrates offline Sinhala letter recognition, grade-aware content review, deterministic coaching and synchronized learning evidence. The study demonstrates that trustworthy integration requires more than model accuracy: duplicate-aware data management, explicit label identity, open-set rejection, conversion parity, failure-state design, privacy boundaries and claim discipline are equally important.")
 
     doc.add_heading("7.2 Accomplishment of the Research Objectives", level=2)
     add_table(doc, ["Objective", "Triangulated evidence", "Achievement"], [
         ("RO1 — Identify gaps", "Recent literature, official Sri Lankan context, exploratory teacher input and repository audit", "Achieved: defined bounded HCR, readability and integration gaps"),
-        ("RO2 — Analyze approaches", "Comparative HCR/readability/mobile/architecture review and suitability decisions", "Achieved: justified CNN, logistic proof of concept and hybrid deployment"),
-        ("RO3 — Develop artifact", "Flutter modules, trained TFLite CNN, Dart classifier, intent router, Firebase AI Logic and evidence service", "Achieved within Grade 1/2 and five-letter mapping boundary"),
-        ("RO4 — Evaluate", "Protected 11,984-image test, macro/top-k/calibration metrics, parity, automated tests and emulator benchmark", "Technically achieved; child field effectiveness remains future work"),
+        ("RO2 — Analyze approaches", "Comparative HCR/readability/mobile/architecture review and suitability decisions", "Achieved: justified open-set CNN, logistic proof of concept and hybrid local/cloud deployment"),
+        ("RO3 — Develop artifact", "Flutter modules, 455-output TFLite CNN, Dart classifier, deterministic coach and evidence services", "Achieved within the Grade 1/2 learning scope"),
+        ("RO4 — Evaluate", "11,296-sample open-set test, adaptation gate, parity, automated tests and emulator benchmark", "Technically achieved; child field effectiveness remains future work"),
     ], font_size=8.0)
 
     doc.add_heading("7.3 Problems Encountered and Resolutions", level=2)
     add_table(doc, ["Problem", "Why it mattered", "Resolution / lesson"], [
         ("Publisher split leakage", "Duplicated images could inflate evaluation", "SHA-256 audit, conflict quarantine and deterministic regrouping"),
         ("Numeric labels compared with Unicode", "Could mark correct traces as wrong or guess identities", "Versioned mapping for five independently verified letters"),
-        ("Legacy 94.04% terminology", "Validation result was incorrectly treated as test-like evidence", "Excluded from headline and replaced by protected 88.61% test result"),
+        ("Invalid scribbles forced into known classes", "A closed-set model could return confident but wrong letters", "Added an Unknown/Invalid output and combined identity with shape gates"),
         ("Tiny Grade 1/2 text corpus", "No credible hold-out or cross-validation conclusion", "Downgraded to proof-of-concept human-review signal"),
-        ("Mobile API credential risk", "Hardcoded secrets are extractable from APKs", "Firebase AI Logic proxy plus App Check; no embedded Gemini key"),
-        ("Empty/blocked AI replies", "Poor user experience and internal error exposure", "Diagnostics, timeout and child-friendly fallback states"),
+        ("Captured-writer distribution shift", "Reference-image accuracy did not ensure touchscreen performance", "One-writer adaptation admitted only after a replay-retention gate"),
+        ("Feature complexity and reliability", "Voice and chat features expanded the failure surface beyond the research components", "Removed them and retained deterministic My Coach guidance"),
         ("Physical phone connection/build delay", "Final device performance could not be recorded", "Reproducible benchmark script retained; claim limited to emulator"),
     ], font_size=7.7)
 
     doc.add_heading("7.4 Self-reflection and Research Ideology", level=2)
-    add_body(doc, "The strongest learning from this study was that an honest lower result is more valuable than a higher but weakly controlled result. Initially, a 94.04% validation figure appeared attractive. The leakage audit showed why that value should not headline the research, and the protected 88.61% test result became a stronger contribution. The same principle changed the treatment of the text classifier: instead of calling 69.2% 'accuracy' without qualification, the final design labels it resubstitution performance and restricts its role.")
-    add_body(doc, "The project also changed my view of AI integration. A system does not become intelligent by sending every input to a generative model. ReadBuddy works more responsibly when deterministic learning tasks, the handwriting CNN, the text classifier and conversational AI remain separate. This architecture improves reproducibility, cost control, privacy and the ability to explain failures to a supervisor, teacher and parent.")
+    add_body(doc, "The strongest learning from this study was that a result is valuable only when its evidence boundary is clear. The open-set evaluation addresses invalid-input behavior that closed-set accuracy could not describe. The one-writer adapter is therefore reported as captured-sample fit plus replay retention, not as child accuracy. The same principle changed the treatment of the text classifier: instead of calling 69.2% 'accuracy' without qualification, the final design labels it resubstitution performance and restricts its role.")
+    add_body(doc, "The project also changed my view of AI integration. A system does not become more useful by adding every available AI interface. NenaPotha works more responsibly when deterministic learning tasks, the handwriting CNN, the text classifier, coaching rules and evidence synchronization remain separate. This architecture improves reproducibility, cost control, privacy and the ability to explain failures to a supervisor, teacher and parent.")
 
     doc.add_heading("7.5 Benefits and Learning Curve", level=2)
     add_bullets(doc, [
@@ -900,7 +945,7 @@ def chapter_seven(doc: Document) -> None:
 
     doc.add_heading("7.6 Business Insight and Real-world Application", level=2)
     add_body(doc, "ReadBuddy AI could support homework practice, learning-recovery programmes, teacher-created reading libraries and low-connectivity community learning. A sustainable deployment should prioritize institutional or school partnerships rather than behavioural advertising or sale of child data. Core offline activities can remain free, while optional organizational services could include curriculum content management, anonymized cohort reporting, deployment support and educator training. Any commercialization must preserve guardian control, data minimization and human oversight.")
-    add_body(doc, "The architecture also generalizes beyond the immediate application. Other low-resource scripts can adopt the same pattern: a task-specific on-device model with explicit label identity, an interpretable content-quality check, deterministic local routing and a protected conversational service. The research value lies in the pattern and evidence contract, not only the current set of five mapped letters.")
+    add_body(doc, "The architecture also generalizes beyond the immediate application. Other low-resource scripts can adopt the same pattern: a task-specific on-device model with explicit label identity, an interpretable content-quality check, deterministic coaching and role-aware evidence synchronization. The research value lies in the pattern and evidence contract, not only the current Sinhala classes.")
 
     doc.add_heading("7.7 Future Recommendations", level=2)
     add_numbered(doc, [
@@ -910,9 +955,9 @@ def chapter_seven(doc: Document) -> None:
         "Conduct an adult/synthetic tracing pilot first; involve children only after institutional ethics, school permission, guardian consent and child assent.",
         "Collect representative Grade 1/2 touchscreen traces, preserve writer groups and evaluate per-letter recall, calibration and abstention.",
         "Create a larger balanced Sinhala readability corpus with independent teacher labels and inter-rater agreement; add akshara, morphology, vocabulary and cohesion features.",
-        "Evaluate local routing coverage, clarification quality and Firebase AI answers with a bilingual safety/appropriateness rubric.",
+        "Evaluate deterministic coaching priorities with teachers and compare recommended activities against expert-selected practice plans.",
         "Perform formal Flutter accessibility checks, teacher/parent UAT and a preregistered active-control learning study before claiming educational impact.",
-        "Use Remote Config or a server prompt template for controlled conversational-model changes without exposing secrets or requiring an app release.",
+        "Use versioned remote configuration only for controlled curriculum and rule updates, with rollback and review before release.",
         "Publish the de-identified split manifest, code, model card and evaluation protocol where dataset licensing permits, improving reproducibility for Sinhala HCR research.",
     ])
 
@@ -948,8 +993,8 @@ def references(doc: Document) -> None:
         '[22] S. L. Amal, “Sinhala Letter 454,” Kaggle dataset, 2022. [Online]. Available: https://www.kaggle.com/datasets/sathiralamal/sinhala-letter-454. [Accessed: Sep. 4, 2026].',
         '[23] P. Ramos, R. Ramos, and N. Garcia, “Data leakage in visual datasets,” in Proc. IEEE/CVF Int. Conf. Comput. Vis. Workshops, 2025, pp. 6368–6378.',
         '[24] Y. K. Adimoolam, C. Poullis, and M. Averkiou, “Data leakage detection and de-duplication in large scale geospatial image datasets,” in Proc. IEEE/CVF Conf. Comput. Vis. Pattern Recognit., 2026.',
-        '[25] Google, “Gemini API using Firebase AI Logic,” Firebase Documentation, Sep. 2026. [Online]. Available: https://firebase.google.com/docs/ai-logic. [Accessed: Sep. 29, 2026].',
-        '[26] Google, “Prevent Gemini API abuse with Firebase App Check,” Firebase Documentation, 2026. [Online]. Available: https://firebase.google.com/docs/ai-logic/app-check. [Accessed: Sep. 29, 2026].',
+        '[25] Google, “Firebase Authentication,” Firebase Documentation, 2026. [Online]. Available: https://firebase.google.com/docs/auth. [Accessed: Oct. 4, 2026].',
+        '[26] Google, “Securely validate data in Cloud Firestore,” Firebase Documentation, 2026. [Online]. Available: https://firebase.google.com/docs/firestore/security/rules-conditions. [Accessed: Oct. 4, 2026].',
         '[27] Flutter, “Accessibility testing,” Flutter Documentation, 2026. [Online]. Available: https://docs.flutter.dev/ui/accessibility/accessibility-testing. [Accessed: Sep. 29, 2026].',
         '[28] E. Tabassi, Artificial Intelligence Risk Management Framework (AI RMF 1.0), NIST AI 100-1. Gaithersburg, MD, USA: National Institute of Standards and Technology, 2023, doi: 10.6028/NIST.AI.100-1.',
         '[29] T. Glatz et al., “Dynamic assessment of the effectiveness of digital game-based literacy training in beginning readers: A cluster randomised controlled trial,” PeerJ, vol. 11, e15499, 2023, doi: 10.7717/peerj.15499.',
@@ -990,7 +1035,7 @@ def appendices(doc: Document) -> None:
         "How should Grade 1 and Grade 2 content differ in vocabulary, sentence length and task complexity?",
         "Which learner-progress indicators are genuinely useful to a parent or teacher?",
         "Which interface-language and learning-language combinations are required for Sinhala- and English-medium families?",
-        "What safeguards are required before a child uses conversational or speech features?",
+        "What safeguards are required before learner progress is shared with a guardian or linked teacher?",
         "Which teacher actions are needed: student linking, activity review, weak-skill identification and coaching notes?",
         "Which functions should continue offline when an internet connection is unavailable?",
     ])
@@ -1014,7 +1059,7 @@ def appendices(doc: Document) -> None:
         "Obtain supervisor approval, institutional ethical clearance and school authorization before recruitment.",
         "Provide a plain-language guardian information sheet, guardian consent form and age-appropriate child assent form.",
         "State participation, withdrawal, recording, storage, retention and deletion arrangements before data collection.",
-        "Pseudonymize learner identity and retain raw handwriting or voice only when scientifically necessary and approved.",
+        "Pseudonymize learner identity and retain raw handwriting only when scientifically necessary and approved.",
         "Separate recognition, usability and learning outcomes; never label intelligence, disability or clinical status.",
         "Begin with adult or synthetic traces and predefined technical stopping rules before any child pilot.",
     ])
@@ -1024,11 +1069,11 @@ def appendices(doc: Document) -> None:
     add_table(doc, ["Dataset characteristic", "Registered value"], [
         ("Publisher image paths audited", "108,933"),
         ("Usable unique samples after validation and conflict handling", "79,788"),
-        ("Class count", "454 numeric output classes"),
-        ("Protected split", "55,820 training / 11,984 validation / 11,984 test"),
-        ("Split policy", "Exact SHA-256 groups retained within one deterministic split; seed 42"),
+        ("Open-set class count", "454 known Sinhala classes + one Unknown/Invalid output"),
+        ("Registered open-set test", "11,296 samples, including 400 unknown/invalid examples"),
+        ("Split policy", "Exact SHA-256 groups retained within one deterministic partition"),
         ("Input format", "64 × 64 single-channel grayscale"),
-        ("Mapped app classes", "1→අ, 2→ආ, 12→ක, 25→ග, 250→ස"),
+        ("Deployment contract", "455 ordered labels; explicit Unknown/Invalid class"),
         ("Text proof-of-concept corpus", "26 authored Grade 1/2 texts; no held-out generalization claim"),
     ])
     add_body(doc, "Large raw image collections are not printed in the thesis. The frozen manifest, hashes, model card and evaluation JSON files in the project repository provide the auditable supplementary record.")
@@ -1042,16 +1087,16 @@ def appendices(doc: Document) -> None:
         ("FR-04", "Evaluate supported Sinhala traces using CNN identity and shape evidence", "Mapping, threshold and similarity tests"),
         ("FR-05", "Persist task, quiz, reading and daily-activity evidence", "Service and serialization tests"),
         ("FR-06", "Allow a teacher to link a student by code and review evidence", "Firestore rule/service and dashboard workflow"),
-        ("FR-07", "Route known bilingual requests locally and unknown conversation through protected AI", "Intent-router and Firebase prompt-boundary tests"),
-        ("FR-08", "Present friendly loading, timeout, blocked and failure states", "Service and widget tests"),
+        ("FR-07", "Generate deterministic evidence-based practice guidance", "Coach prioritization and navigation tests"),
+        ("FR-08", "Present friendly loading, no-data, offline and failure states", "Service and widget tests"),
     ], font_size=8.0)
     add_table(doc, ["ID", "Non-functional requirement", "Target / evidence"], [
         ("NFR-01", "Usability", "Large touch targets, predictable navigation, child-friendly feedback"),
-        ("NFR-02", "Privacy", "No Gemini key in APK; no raw trace sent to conversational AI"),
+        ("NFR-02", "Privacy", "No raw trace upload; role-aware access to synchronized evidence"),
         ("NFR-03", "Reliability", "Model failure abstains rather than awarding a correct score"),
-        ("NFR-04", "Performance", "Recorded emulator mean 83.58 ms and p95 140.79 ms CNN inference"),
-        ("NFR-05", "Maintainability", "Separated CNN, text classifier, intent router and conversational services"),
-        ("NFR-06", "Testability", "No analyzer issues and 125/125 Flutter tests passing"),
+        ("NFR-04", "Performance", "Recorded emulator mean 81.24 ms and p95 92.92 ms CNN inference"),
+        ("NFR-05", "Maintainability", "Separated CNN, text classifier, coach and progress services"),
+        ("NFR-06", "Testability", "No analyzer issues and 130/130 Flutter tests passing"),
     ], font_size=8.0)
 
     doc.add_page_break()
@@ -1080,28 +1125,37 @@ def appendices(doc: Document) -> None:
 
     doc.add_page_break()
     doc.add_heading("Appendix I — Implemented System Screenshots", level=1)
-    add_body(doc, "Figures I.1–I.13 are dated Android-emulator captures from the final application workflow supplied on 29 September 2026. Demonstration identities and join codes are test data. The figures document implementation state; they are not participant-study evidence.")
+    add_body(doc, "Figures I.1–I.14 are dated Android-emulator captures from the final application workflow supplied on 4 October 2026. They are ordered from authentication and language selection through learner activities, progress and teacher analysis. Demonstration identities and join codes are test data. The figures document implementation state; they are not participant-study evidence.")
+    screenshot_items = []
     for index, (filename, caption) in enumerate(SCREENSHOT_MANIFEST, start=1):
         path = SCREENSHOTS_DIR / filename
-        if not path.exists():
-            continue
+        if path.exists():
+            screenshot_items.append((path, f"Figure I.{index}. {caption}."))
+    if SCREENSHOT_APPENDIX_COMPOSITE.exists():
+        screenshot_items.append((SCREENSHOT_APPENDIX_COMPOSITE, "Figure I.14. Composite overview of the final learner, Grade 2, progress and teacher workflows."))
+    for pair_start in range(0, len(screenshot_items), 2):
+        pair = screenshot_items[pair_start:pair_start + 2]
         p = doc.add_paragraph()
         p.alignment = WD_ALIGN_PARAGRAPH.CENTER
-        p.add_run().add_picture(str(path), width=Inches(3.05))
-        add_caption(doc, f"Figure I.{index}. {caption}.")
-        if index != len(SCREENSHOT_MANIFEST):
+        for item_index, (path, _) in enumerate(pair):
+            if item_index:
+                p.add_run("    ")
+            p.add_run().add_picture(str(path), width=Inches(2.65))
+        for _, caption in pair:
+            add_caption(doc, caption)
+        if pair_start + 2 < len(screenshot_items):
             doc.add_page_break()
 
     doc.add_page_break()
     doc.add_heading("Appendix J — Algorithm, Model and Technical Configuration", level=1)
     add_table(doc, ["CNN configuration", "Registered value"], [
-        ("Input / output", "float32 [1,64,64,1] → float32 [1,454]"),
-        ("Architecture", "Three convolution layers; max pooling after first two; dense 128; dropout 0.30; softmax 454"),
+        ("Input / output", "float32 [1,64,64,1] → float32 [1,455]"),
+        ("Architecture", "Three convolution stages; dense representation; dropout; softmax 455"),
         ("Optimization", "Adam, learning rate 0.001, sparse categorical cross-entropy"),
         ("Training", "Batch 64; maximum 40 epochs; validation-loss early stopping"),
         ("Preprocessing", "Decode, grayscale, crop-normalize, resize 64 × 64, normalize intensity"),
-        ("Decision gate", "Expected Unicode mapping and confidence ≥0.50; otherwise abstain/retry"),
-        ("Deployment", "2,527,920-byte TensorFlow Lite model"),
+        ("Decision gate", "Expected target identity, Unknown/Invalid output and shape evidence; otherwise abstain/retry"),
+        ("Deployment", "2,528,104-byte TensorFlow Lite model; SHA-256 6D3303F14329E72ADA074C1A5C2974506778EA2681E1F4F3704655A44973565C"),
     ])
     add_table(doc, ["Text-difficulty configuration", "Registered value"], [
         ("Purpose", "Grade 1/2 authored-content quality-control signal only"),
@@ -1115,46 +1169,47 @@ def appendices(doc: Document) -> None:
     doc.add_heading("Appendix K — Software Testing Documentation", level=1)
     add_table(doc, ["Test area", "Expected result", "Final result"], [
         ("Flutter static analysis", "No type, compile or lint issue", "Pass — no issues found"),
-        ("Flutter unit/widget suite", "All specified services and UI behaviours pass", "Pass — 125/125"),
+        ("Flutter unit/widget suite", "All specified services and UI behaviours pass", "Pass — 130/130"),
         ("Pillam selection navigation", "Selected detail panel scrolls into view", "Pass — regression test included"),
         ("Dataset integrity", "Hash groups stay in one split; conflicts quarantined", "Pass"),
-        ("Tensor contract", "Bundled asset exposes [1,64,64,1] and [1,454]", "Pass"),
-        ("Unicode mapping", "All exposed app letters map deterministically", "Pass for five exposed classes"),
-        ("Keras–TFLite parity", "At least 98% top-1 agreement", "Pass — 99/100"),
+        ("Tensor contract", "Bundled asset exposes [1,64,64,1] and [1,455]", "Pass"),
+        ("Label contract", "455 output labels retain registered order", "Pass"),
+        ("TFLite parity", "Registered adapter predictions remain stable after conversion", "Pass — 100/100 top-1"),
         ("Android integration", "Load bundled model and complete native inference", "Pass on Android 14 emulator"),
-        ("Conversational failures", "Timeout/blocked/empty output becomes child-friendly fallback", "Pass in deterministic service tests"),
+        ("Coach and progress failures", "Sparse/offline/no-data conditions remain understandable", "Pass in deterministic service tests"),
         ("Physical-device benchmark", "Defined low/mid/high-device results", "Pending; no physical-device performance claim"),
     ], font_size=8.0)
 
     doc.add_page_break()
     doc.add_heading("Appendix L — User Acceptance and Expert Evaluation Instrument", level=1)
-    add_callout(doc, "Administration condition", "Use this blank instrument only after supervisor authorization. Record respondent role and consent; do not present an unadministered form as evaluation results.")
-    add_table(doc, ["Statement", "1", "2", "3", "4", "5", "Comment"], [
-        ("The main navigation is clear.", "", "", "", "", "", ""),
-        ("Text, colour and touch targets are suitable for the intended age.", "", "", "", "", "", ""),
-        ("Grade 1 and Grade 2 activities are appropriately separated.", "", "", "", "", "", ""),
-        ("Tracing feedback is understandable and appropriately cautious.", "", "", "", "", "", ""),
-        ("Progress evidence is useful to a parent or teacher.", "", "", "", "", "", ""),
-        ("Sinhala and English controls are understandable.", "", "", "", "", "", ""),
-        ("Error and offline states are acceptable.", "", "", "", "", "", ""),
-        ("I would recommend supervised pilot use after corrections.", "", "", "", "", "", ""),
-    ], font_size=7.2)
-    add_body(doc, "Scale: 1 = strongly disagree; 2 = disagree; 3 = neutral; 4 = agree; 5 = strongly agree. Respondent role: __________  Date: __________  Consent recorded: Yes / No")
+    add_callout(doc, "Administration condition", "No human UAT result is claimed. This completed protocol defines the instrument to be administered only after supervisor and ethics authorization; uncollected scores must never be fabricated.")
+    add_table(doc, ["Evaluation criterion", "Planned question", "Evidence and decision rule"], [
+        ("Navigation", "Can the intended user locate Home, Learn, My Coach, Progress and Profile?", "Observation plus 1–5 rating; report task success and median rating"),
+        ("Child-facing presentation", "Are text size, colour, pictures and touch targets suitable for the intended grade?", "Expert review plus accessibility scan; record each required correction"),
+        ("Grade separation", "Do Grade 1 and Grade 2 activities show an appropriate progression?", "Teacher judgement with reasons; no automated claim"),
+        ("Tracing feedback", "Is correct, incorrect and invalid-input feedback understandable and cautious?", "Scripted examples; any misleading success is a release blocker"),
+        ("Progress evidence", "Can a guardian or teacher understand activity, strengths and practice needs?", "Scenario walkthrough and 1–5 usefulness rating"),
+        ("Language controls", "Can either interface language access Sinhala and English learning content?", "Four-combination task check; every combination must pass"),
+        ("Failure states", "Are offline, loading, no-data and permission errors recoverable?", "Scripted negative paths; no crash or data disclosure permitted"),
+        ("Pilot readiness", "Is supervised use acceptable after recorded corrections?", "Explicit yes/no recommendation with reviewer role and date"),
+    ], font_size=7.4)
+    add_body(doc, "Planned rating scale: 1 = strongly disagree, 2 = disagree, 3 = neutral, 4 = agree and 5 = strongly agree. Future administration must record role, date, consent and sampling method in a new dated evidence artifact.")
 
     doc.add_page_break()
     doc.add_heading("Appendix M — Evaluation Results and Supplementary Analysis", level=1)
     add_table(doc, ["Metric", "Custom CNN result", "Interpretation boundary"], [
-        ("Protected top-1 accuracy", "88.61%", "Reference test-set performance, not child touchscreen accuracy"),
-        ("Macro precision", "88.86%", "Class-balanced precision summary"),
-        ("Macro recall", "88.11%", "Class-balanced recall summary"),
-        ("Macro F1", "88.14%", "Class-balanced precision/recall balance"),
-        ("Top-2 / top-3 accuracy", "92.05% / 93.51%", "Candidate coverage; app still requires identity gating"),
-        ("Expected calibration error", "0.0515", "Confidence calibration on the protected test set"),
-        ("Keras–TFLite agreement", "99.00% on 100 samples", "Conversion parity sample, not new accuracy evidence"),
-        ("Emulator inference", "Mean 83.58 ms; p95 140.79 ms", "Android 14 emulator only"),
+        ("Open-set overall accuracy", "98.46%", "Registered test performance, not child touchscreen accuracy"),
+        ("Letter-only accuracy", "98.51%", "Known-class reference performance"),
+        ("Macro F1", "98.73%", "Class-balanced precision/recall summary"),
+        ("Top-3 accuracy", "99.43%", "Candidate coverage; app still requires expected-target gating"),
+        ("Unknown recall / invalid FAR", "97.00% / 3.00%", "Open-set rejection evidence on 400 unknown samples"),
+        ("Expected calibration error", "0.0031", "Confidence calibration on the registered open-set test"),
+        ("Adapter replay retention", "95.85% after adaptation", "One-writer adapter; captured fit is not independent accuracy"),
+        ("TFLite agreement", "100.00% on 100 samples", "Conversion parity sample, not new accuracy evidence"),
+        ("Emulator inference", "Mean 81.24 ms; p95 92.92 ms", "Android 14 emulator only"),
     ])
     for path, caption in [
-        (ASSETS / "cnn_protected_test_metrics.png", "Figure M.1. Protected held-out CNN performance metrics."),
+        (ASSETS / "cnn_protected_test_metrics.png", "Figure M.1. Registered open-set CNN performance metrics."),
         (ROOT / "deliverables" / "stage6_evaluation" / "per_class_recall_analysis.png", "Figure M.2. Supplementary per-class recall analysis."),
         (ROOT / "deliverables" / "stage6_evaluation" / "top_confusion_pairs.png", "Figure M.3. Most frequent protected-test confusion pairs."),
     ]:
@@ -1174,7 +1229,7 @@ def appendices(doc: Document) -> None:
         "Use Progress to review completed practice, recent activity, strengths and areas requiring further practice.",
         "A teacher registers with the Teacher role, opens Students, selects Add Student and enters the learner's guardian-generated join code.",
         "The teacher selects a linked learner to review task, quiz, reading, daily-activity and coaching evidence.",
-        "If cloud or conversational support is unavailable, retry later and continue with the offline learning activities.",
+        "If cloud synchronization is unavailable, continue with bundled learning activities and retry the adult evidence view later.",
         "Use the profile/logout controls to end the adult session on a shared device.",
     ])
 
@@ -1183,28 +1238,26 @@ def appendices(doc: Document) -> None:
     add_code(doc, "flutter pub get\nflutter analyze\nflutter test\nflutter run")
     add_bullets(doc, [
         "Install the stable Flutter SDK, Android Studio/SDK and a supported Android emulator or device.",
-        "Configure the authorized Firebase Android application using google-services.json; do not store a Gemini credential in Dart or the APK.",
-        "Enable Firebase Authentication, Firestore, Firebase AI Logic with the Gemini Developer API provider and Firebase App Check.",
-        "Register the App Check debug token only for development; use Play Integrity for a release build.",
+        "Configure the authorized Firebase Android application using google-services.json and restrict configuration files to the intended project.",
+        "Enable Firebase Authentication and Firestore, then deploy the tested role-aware security rules.",
+        "Verify guardian ownership, teacher links and no-data/error states before a release build.",
         "Confirm that the bundled TFLite model and verified label asset retain their registered hashes before reporting research results.",
         "Build a release artifact only after analyzer, tests, Firestore rules and production App Check are verified.",
     ])
 
     doc.add_page_break()
     doc.add_heading("Appendix P — Supervisor Meeting Record", level=1)
-    add_table(doc, ["Review point", "Supervisor feedback / decision", "Student action and date"], [
-        ("Final Grade 1–2 scope and title", "", ""),
-        ("Research question and four objectives", "", ""),
-        ("Treatment of two-teacher exploratory input", "", ""),
-        ("Protected test terminology and 88.61% result", "", ""),
-        ("Text classifier proof-of-concept wording", "", ""),
-        ("Screenshot and appendix selection", "", ""),
-        ("Permission for participant or pilot activity", "", ""),
-        ("Final formatting and submission corrections", "", ""),
-    ], font_size=8.0)
-    p = doc.add_paragraph("Supervisor name/signature: ______________________________    Date: ______________")
-    p.paragraph_format.space_before = Pt(24)
-    doc.add_paragraph("Student signature: _______________________________________    Date: ______________")
+    add_body(doc, "The following scanned records are reproduced as supplied. They preserve the handwritten dates and signatures and are included as administrative evidence rather than reconstructed summaries.")
+    for index, (filename, caption) in enumerate(MEETING_MANIFEST, start=1):
+        path = MEETING_DIR / filename
+        if not path.exists():
+            continue
+        p = doc.add_paragraph()
+        p.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        p.add_run().add_picture(str(path), height=Inches(7.5))
+        add_caption(doc, f"Figure P.{index}. {caption}.")
+        if index != len(MEETING_MANIFEST):
+            doc.add_page_break()
 
     doc.add_page_break()
     doc.add_heading("Appendix Q — Project Progress and Management Evidence", level=1)
@@ -1212,8 +1265,8 @@ def appendices(doc: Document) -> None:
         ("1", "Project audit, scope and baseline research components", "Completed and documented"),
         ("2", "Dataset preparation and leakage controls", "Completed and documented"),
         ("3", "Custom CNN training, protected evaluation and model registration", "Completed and documented"),
-        ("4", "Flutter model integration and verified label contract", "Completed for five exposed mappings"),
-        ("5", "Hybrid bilingual intent and protected conversational integration", "Implemented and tested"),
+        ("4", "Flutter model integration and verified 455-label contract", "Completed and runtime-tested"),
+        ("5", "Deterministic coaching, progress and teacher-linked evidence integration", "Implemented and tested"),
         ("6", "Technical evaluation package, parity, tests and emulator benchmark", "Completed; child field trial pending ethics"),
         ("7", "Physical-device protocol and final deployment evidence", "Protocol ready; physical-device benchmark pending"),
     ])
@@ -1222,7 +1275,7 @@ def appendices(doc: Document) -> None:
     doc.add_heading("Appendix R — Source Code and Repository Information", level=1)
     add_table(doc, ["Repository area", "Purpose"], [
         ("lib/screens", "Learner, learning, tracing, reading, progress, profile and teacher interfaces"),
-        ("lib/services", "CNN inference, progress, activity, coaching, intent, Firebase AI, authentication and persistence boundaries"),
+        ("lib/services", "CNN inference, progress, activity, deterministic coaching, authentication and persistence boundaries"),
         ("assets/models", "Bundled TensorFlow Lite model and label/mapping assets"),
         ("training", "Leakage-aware preparation, training, protected evaluation and deployment registration"),
         ("test", "Flutter unit and widget regression tests"),
@@ -1243,17 +1296,18 @@ def appendices(doc: Document) -> None:
         ("students/{studentId}/quizAttempts", "Comprehension-question evidence", "Owner and authorized linked teacher"),
         ("students/{studentId}/dailyActivity", "Dated engagement summary", "Owner and authorized linked teacher"),
         ("joinCodes", "Short-lived learner-linking code", "Validated linking workflow"),
-        ("Firebase AI Logic", "Unmatched conversational prompt and response", "App Check-protected proxy; no embedded API key"),
+        ("Smart Learning Coach", "Recent attempts and ranked practice suggestions", "Local deterministic rules; no generative prompt or child dialogue"),
     ], font_size=7.6)
-    add_body(doc, "CNN inference, shape comparison and the Grade 1/2 text-difficulty check run locally. The conversational prompt excludes learner names, stored progress, raw traces and CNN outputs. Debug App Check is a development-only configuration and must be replaced by production attestation before release.")
+    add_body(doc, "CNN inference, shape comparison, the Grade 1/2 text-difficulty check and coaching rules run locally. Firestore receives only the records needed for progress and authorized teacher analysis; raw trace images are not required. Production deployment must retain tested Authentication and Firestore rule boundaries.")
 
     doc.add_page_break()
     doc.add_heading("Appendix T — Supporting Evidence and Claim Register", level=1)
     add_table(doc, ["Claim", "Supporting artifact", "Permitted conclusion"], [
-        ("Protected CNN performance", "custom_cnn_metrics.json and classification report", "88.61% reference test accuracy under the registered split"),
-        ("Deployment parity", "keras_tflite_parity.json", "99% top-1 agreement on the registered 100-sample parity set"),
-        ("Android execution", "Device benchmark plus Figures 5.1 and I.1–I.13", "The app and bundled model execute on the recorded emulator path"),
-        ("Software correctness", "Analyzer output and 125 automated tests", "Specified tested behaviours pass; exhaustive correctness is not implied"),
+        ("Open-set CNN performance", "open_set_metrics.json", "98.46% overall accuracy under the registered 455-output evaluation"),
+        ("Captured adapter", "captured_adapter_report.json", "Replay gate passed; no claim of writer-independent or child accuracy"),
+        ("Deployment parity", "captured_adapter_report.json", "100% top-1 parity on the registered 100-sample set"),
+        ("Android execution", "Final integration benchmark plus Figures 5.1 and I.1–I.14", "The app and bundled model execute on the recorded emulator path"),
+        ("Software correctness", "Analyzer output and 130 automated tests", "Specified tested behaviours pass; exhaustive correctness is not implied"),
         ("Text-difficulty component", "26-text proof-of-concept record", "Deterministic integration exists; generalization is unproven"),
         ("Educational effectiveness", "No ethics-approved child trial", "No claim of improved literacy, usability or classroom effectiveness"),
     ], font_size=8.0)

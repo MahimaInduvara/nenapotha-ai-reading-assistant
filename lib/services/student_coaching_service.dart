@@ -86,8 +86,7 @@ class StudentCoachingReport {
 }
 
 /// Produces explainable coaching advice from recorded learning evidence.
-/// This is deterministic and free: it does not call Gemini or send child
-/// data to any additional service.
+/// This is deterministic and runs locally from the supplied evidence.
 class StudentCoachingService {
   static StudentCoachingReport build({
     required int grade,

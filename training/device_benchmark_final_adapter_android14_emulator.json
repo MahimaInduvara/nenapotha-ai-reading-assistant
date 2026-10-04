@@ -1,0 +1,27 @@
+{
+  "recordedAt": "2026-10-04",
+  "platform": "Android 14 emulator",
+  "modelAsset": "assets/models/sinhala_letter_model.tflite",
+  "modelSha256": "6D3303F14329E72ADA074C1A5C2974506778EA2681E1F4F3704655A44973565C",
+  "labelAsset": "assets/models/class_names.txt",
+  "labelSha256": "7A4E0269FB58F039EBDC247C0A6EEC76764D82351467DA4D98F93D3378935B91",
+  "inputShape": [1, 64, 64, 1],
+  "outputShape": [1, 455],
+  "warmupRuns": 5,
+  "measuredRuns": 30,
+  "modelLoadMs": 196.959,
+  "nativeInferenceMs": {
+    "mean": 81.2371,
+    "p50": 78.603,
+    "p95": 92.924,
+    "min": 69.458,
+    "max": 135.37
+  },
+  "endToEndMs": {
+    "mean": 85.3821,
+    "p95": 96.904
+  },
+  "testCommand": "flutter test integration_test/cnn_runtime_benchmark_test.dart -d emulator-5554 --reporter expanded",
+  "result": "pass",
+  "interpretationBoundary": "Emulator execution evidence only; no physical-device performance claim."
+}

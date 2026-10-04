@@ -1,15 +1,12 @@
-// File generated normally by the FlutterFire CLI, NOT by hand.
-//
-// ⚠️ THIS IS A PLACEHOLDER — it will NOT connect to your real Firebase
-// project as-is. Replace it by running this in your project root:
+// Firebase client configuration. Android is registered for the research
+// project; web and iOS retain placeholders because they are outside the
+// evaluated platform. Regenerate platform configuration by running:
 //
 //   dart pub global activate flutterfire_cli
-//   flutterfire configure --project=reading_app
+//   flutterfire configure --project=reading-app-10118
 //
-// That command overwrites this file with your project's real API keys and
-// app IDs, and registers whichever platforms you select (web, android, etc).
-// The app WILL compile with this placeholder file, but any Cloud Functions
-// call will fail at runtime until you run the command above.
+// Firebase client identifiers are not administrative credentials. Security
+// is enforced by Authentication, App Check, and the deployed Firestore rules.
 
 // ignore_for_file: type=lint
 

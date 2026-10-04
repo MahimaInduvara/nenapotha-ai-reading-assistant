@@ -22,8 +22,8 @@ void main() async {
           : AppleProvider.appAttestWithDeviceCheckFallback,
     );
   } catch (error) {
-    // Keep local learning features available if App Check cannot initialize.
-    // Enforced Firebase AI Logic calls will then use the friendly error path.
+    // Keep local learning features available if App Check cannot initialize;
+    // authenticated cloud synchronization can be retried later.
     debugPrint('Firebase App Check activation failed: $error');
   }
   await StorageService().init();

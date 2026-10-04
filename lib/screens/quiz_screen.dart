@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../models/story.dart';
 import '../models/quiz_attempt.dart';
-import '../services/ai_service.dart';
+import '../services/quiz_generation_service.dart';
 import '../services/activity_service.dart';
 import '../utils/app_colors.dart';
 
@@ -26,7 +26,7 @@ class QuizScreen extends StatefulWidget {
 }
 
 class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin {
-  final _ai = AIService();
+  final _quizGenerator = QuizGenerationService();
   late List<QuizQuestion> _questions;
   int _current = 0;
   int _score = 0;
@@ -59,7 +59,7 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    _questions = _ai.generateQuiz(
+    _questions = _quizGenerator.generateQuiz(
       widget.story,
       count: 5,
       gradeLevel: widget.gradeLevel,
@@ -740,7 +740,7 @@ class _QuizScreenState extends State<QuizScreen> with TickerProviderStateMixin {
                       _selectedOption = null;
                       _done = false;
                       _results.clear();
-                      _questions = _ai.generateQuiz(
+                      _questions = _quizGenerator.generateQuiz(
                         widget.story,
                         count: 5,
                         gradeLevel: widget.gradeLevel,
