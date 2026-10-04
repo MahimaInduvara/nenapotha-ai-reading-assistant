@@ -120,8 +120,8 @@ def main() -> None:
         errors.append("Abstract word count is outside 200–300")
     if len(appendix_headings) != 20:
         errors.append("Appendix A–T set is incomplete")
-    if len(screenshot_captions) != 13:
-        errors.append("Not all 13 screenshots are captioned")
+    if len(screenshot_captions) != 14:
+        errors.append("Not all 14 screenshot figures are captioned")
     if len(references) < 20:
         errors.append("Reference list is unexpectedly short")
     if forbidden:

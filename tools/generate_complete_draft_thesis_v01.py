@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import re
 from pathlib import Path
 from typing import Iterable
@@ -43,7 +44,10 @@ from generate_thesis_breakdown import (
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / "deliverables"
-DOCX = OUT / "NenaPotha_AI_Final_Thesis_28277.docx"
+DOCX = OUT / os.environ.get(
+    "NENAPOTHA_THESIS_DOCX",
+    "NenaPotha_AI_Final_Thesis_28277.docx",
+)
 SCREENSHOT_COMPOSITE = ASSETS / "nenapotha_ai_app_execution_screens.png"
 SCREENSHOT_APPENDIX_COMPOSITE = ASSETS / "nenapotha_ai_app_execution_screens_portrait.png"
 SCREENSHOTS_DIR = Path(r"C:\Users\DELL\Pictures\Screenshots\research")
@@ -534,7 +538,7 @@ def front_matter(doc: Document) -> None:
     doc.add_page_break()
 
     doc.add_heading("ABSTRACT", level=1)
-    add_body(doc, "Foundational literacy remains a concern in Sri Lanka, while Sinhala-focused educational applications provide limited integrated support for handwriting practice, grade-appropriate reading, picture-supported vocabulary and evidence-based adult guidance. This study designed and technically evaluated NenaPotha AI, a bilingual mobile reading and comprehension assistant for Grade 1 and Grade 2 learners. A pragmatist design-science approach connected educational requirements with two machine-learning components and a deterministic learning-coach workflow. The principal component is a 64 × 64 grayscale convolutional neural network extended from 454 known Sinhala character classes to a 455-output open-set model containing an explicit Unknown/Invalid class. On 11,296 open-set test samples, the base model achieved 98.46% overall accuracy, 98.51% letter-only accuracy, 98.73% macro-F1 and 99.43% top-3 accuracy; unknown recall was 97.00% and invalid false acceptance was 3.00%. A subsequent one-writer adaptation raised captured-sample training fit from 16.95% to 72.88% while retaining 95.85% accuracy on 1,108 held-out replay samples. These captured samples are not an independent child test set. The deployed TensorFlow Lite model preserved 100% top-1 parity over 100 registered samples and executed with a mean native latency of 81.24 ms and p95 of 92.92 ms over 30 Android 14 emulator runs. A second, interpretable logistic-regression component provides a Grade 1/2 text-difficulty quality-control signal; its 69.2% resubstitution accuracy on 26 authored texts is not treated as generalization evidence. The final application adds picture-supported Grade 1 and Grade 2 pathways, stories and comprehension tasks, progress synchronization, teacher-linked student analysis and a deterministic coach that uses recorded attempts without a chatbot or paid API. Static analysis and 130 automated Flutter tests passed. Because no ethics-approved child effectiveness trial was completed, the contribution is a reproducible technical artifact and evaluation protocol rather than evidence of improved learning outcomes.")
+    add_body(doc, "Foundational literacy remains a concern in Sri Lanka, while Sinhala-focused educational applications provide limited integrated support for handwriting, grade-appropriate reading, picture-supported vocabulary and adult guidance. This study designed and technically evaluated NenaPotha AI, a bilingual mobile reading and comprehension assistant for Grade 1 and Grade 2 learners. A pragmatist design-science process connected educational requirements with two machine-learning components and a deterministic learning coach. The principal component is a 64 × 64 grayscale convolutional neural network extended from 454 Sinhala character classes to a 455-output open-set model with an explicit Unknown/Invalid class. On 11,296 test samples, it achieved 98.46% overall accuracy, 98.51% letter-only accuracy, 98.73% macro-F1 and 97.00% unknown recall, with 3.00% invalid false acceptance. One-writer adaptation raised captured-sample training fit from 16.95% to 72.88% while retaining 95.85% accuracy on 1,108 held-out replay samples; these captures are not an independent child test set. The deployed TensorFlow Lite model preserved 100% top-1 parity over 100 registered samples and averaged 81.24 ms native latency across 30 Android 14 emulator runs. An interpretable logistic-regression component supplies a Grade 1/2 text-difficulty quality-control signal, although its 69.2% resubstitution accuracy on 26 authored texts is not generalization evidence. The application also provides picture-supported learning, stories, comprehension tasks, synchronized progress, teacher-linked analysis and deterministic coaching without a chatbot or paid API. Static analysis and 130 Flutter tests passed. As no ethics-approved child effectiveness trial was completed, the contribution is a reproducible technical artifact and evaluation protocol rather than evidence of improved learning outcomes.")
     p = doc.add_paragraph()
     p.add_run("Keywords—").bold = True
     p.add_run(" Sinhala handwriting recognition, early literacy, open-set classification, convolutional neural network, TensorFlow Lite, readability assessment, learning analytics, bilingual mobile learning")
@@ -1273,6 +1277,13 @@ def appendices(doc: Document) -> None:
 
     doc.add_page_break()
     doc.add_heading("Appendix R — Source Code and Repository Information", level=1)
+    add_table(doc, ["Repository item", "Verified value"], [
+        ("Public repository", "https://github.com/MahimaInduvara/nenapotha-ai-reading-assistant"),
+        ("Submission branch", "main"),
+        ("Application source tag", "application-submission-v1.0.0"),
+        ("Application source commit", "1f4f2aeea5a07008738fd73d6395065ab42ecee8"),
+        ("Access", "Public read access; the repository can be browsed, downloaded or cloned"),
+    ])
     add_table(doc, ["Repository area", "Purpose"], [
         ("lib/screens", "Learner, learning, tracing, reading, progress, profile and teacher interfaces"),
         ("lib/services", "CNN inference, progress, activity, deterministic coaching, authentication and persistence boundaries"),
@@ -1283,7 +1294,8 @@ def appendices(doc: Document) -> None:
         ("deliverables/stage6_evaluation", "Registered metrics, figures, summaries and pilot protocol"),
         ("tools", "Reproducible document and evaluation-report generation"),
     ])
-    add_body(doc, "The complete repository should be submitted through the institution-approved channel. Hundreds of source-code pages are intentionally not printed; the appendix identifies the auditable locations and the installation guide defines how to reproduce the software checks.")
+    add_body(doc, "The complete source snapshot is publicly available at the repository URL above. It can be reproduced with ''git clone https://github.com/MahimaInduvara/nenapotha-ai-reading-assistant.git'' followed by ''git checkout application-submission-v1.0.0''. The application-source tag is fixed to the full commit identifier shown above, while later documentation-only commits do not alter that submitted source snapshot.")
+    add_body(doc, "After installing the Flutter toolchain, the principal verification commands are ''flutter pub get'', ''flutter analyze'' and ''flutter test''. Hundreds of source-code pages are intentionally not printed; this appendix identifies the auditable locations, version and reproducible access path instead.")
 
     doc.add_page_break()
     doc.add_heading("Appendix S — Database, AI and Integration Documentation", level=1)
